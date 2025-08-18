@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context-Conditioned Composing Contest</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Context-Conditioned Composing Contest</h1>
+            <p class="subtitle">文脈を読んで変換する日本語IME向けタイピングゲーム</p>
+        </header>
+
+        <div class="start-screen" id="startScreen">
+            <div class="start-content">
+                <h2>ゲーム説明</h2>
+                <ul class="instructions-list">
+                    <li>テキストフィールドに表示される文脈の続きを入力します</li>
+                    <li>ひらがなで入力し、正しい漢字に変換されるかチェックします</li>
+                    <li>Cmd+Enter（Mac）/ Ctrl+Enter（Windows）で確定</li>
+                    <li>全問題完了までの時間を競います</li>
+                </ul>
+                <button id="startBtn" class="start-btn">ゲームスタート</button>
+                <div class="ranking-preview" id="rankingPreview"></div>
+            </div>
+        </div>
+
+        <div class="game-area" style="display: none;">
+            <div class="status-bar">
+                <div class="progress">
+                    <span class="question-counter">問題: <span id="currentQuestion">1</span> / 10</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                <button id="resetBtn" class="reset-btn">リセット</button>
+            </div>
+
+            <div class="question-area">
+                <div class="instruction">
+                    <p>テキストフィールドの続きをひらがなで入力してください</p>
+                    <p class="hint">文脈の後に続きを入力して、Cmd+Enter（Mac）/ Ctrl+Enter（Windows）で確定</p>
+                </div>
+                <div class="input-area">
+                    <textarea id="userInput" rows="3" placeholder="例: 雑誌にのります" autocomplete="off" spellcheck="false"></textarea>
+                    <button id="submitBtn" class="submit-btn">変換して確定</button>
+                </div>
+                <div class="expected-display">
+                    <div class="expected-answer">
+                        <span class="label">期待される結果:</span>
+                        <span id="expectedAnswer">雑誌に載ります</span>
+                    </div>
+                    <div class="converted-result" id="convertedResult">
+                        <span class="label">あなたの変換結果:</span>
+                        <span id="userConverted">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="game-over" id="gameOver">
+            <h2>ゲーム終了！</h2>
+            <button id="restartBtn" class="restart-btn">もう一度プレイ</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
