@@ -319,8 +319,8 @@ function displayRankingPreview() {
         return;
     }
     
-    let html = '<h3>ランキング TOP5</h3><ol class="rankings-preview">';
-    rankings.slice(0, 5).forEach((entry, index) => {
+    let html = '<h3>ランキング TOP10</h3><ol class="rankings-preview">';
+    rankings.forEach((entry, index) => {
         html += `
             <li class="ranking-entry">
                 <span class="rank">${index + 1}位</span>
