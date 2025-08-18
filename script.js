@@ -9,6 +9,7 @@ let totalTime = 0;
 let questionStartTime = 0;
 let gameStarted = false;
 let timerInterval = null;
+let isProcessing = false;
 
 const userConvertedEl = document.getElementById('userConverted');
 const userInputEl = document.getElementById('userInput');
@@ -112,17 +113,23 @@ function loadQuestion() {
         return;
     }
 
+    isProcessing = false; // 新しい問題読み込み時にフラグをリセット
+    
     const question = gameQuestions[currentQuestionIndex];
-    console.log('Loading question:', question); // デバッグログ
     userInputEl.value = question.context;
-    expectedAnswerEl.textContent = question.fullDisplay;
-    userConvertedEl.textContent = '-';
+    expectedAnswerEl.innerHTML = `<span class="label">期待される結果:</span> ${question.fullDisplay}`;
+    userConvertedEl.innerHTML = '-';
     
     questionStartTime = Date.now();
     
-    const cursorPosition = question.context.length;
-    userInputEl.setSelectionRange(cursorPosition, cursorPosition);
-    userInputEl.focus();
+    // IMEの文脈読み直しのため、一度フォーカスを外してから再設定
+    userInputEl.blur();
+    
+    setTimeout(() => {
+        const cursorPosition = question.context.length;
+        userInputEl.setSelectionRange(cursorPosition, cursorPosition);
+        userInputEl.focus();
+    }, 50); // 50ms後にフォーカスを当てる
     
     currentQuestionEl.textContent = currentQuestionIndex + 1;
     progressFillEl.style.width = `${((currentQuestionIndex + 1) / gameQuestions.length) * 100}%`;
@@ -137,53 +144,95 @@ function convertToKanji(hiragana, context) {
     return hiragana;
 }
 
-function checkAnswerRealtime() {
-    if (!gameStarted) return;
+function checkAnswer() {
+    if (!gameStarted || isProcessing) return;
+    
+    isProcessing = true;
     
     const fullText = userInputEl.value;
     const question = gameQuestions[currentQuestionIndex];
     
-    console.log('Checking:', { fullText, context: question.context, expected: question.fullDisplay }); // デバッグログ
-    
     if (!fullText.startsWith(question.context)) {
+        showFeedback('文脈を消さないでください', 'incorrect');
+        isProcessing = false;
         return;
     }
     
     const userAnswer = fullText.replace(question.context, '').trim();
     
     if (!userAnswer) {
-        userConvertedEl.textContent = '-';
-        feedbackEl.classList.remove('show', 'correct', 'incorrect');
+        showFeedback('回答を入力してください', 'incorrect');
+        isProcessing = false;
         return;
     }
     
-    const convertedAnswer = convertToKanji(userAnswer, question.context);
-    const fullConverted = question.context + convertedAnswer;
+    // 比較表示を更新（入力されたテキストをそのまま使用）
+    updateComparisonDisplay(fullText, question.fullDisplay);
     
-    console.log('Conversion:', { userAnswer, convertedAnswer, fullConverted }); // デバッグログ
-    
-    userConvertedEl.textContent = fullConverted;
-    
-    // ひらがなのままでは正解にしない（変換が発生した場合のみ正解判定）
-    const hasConversion = convertedAnswer !== userAnswer;
     // 空白を無視して比較
-    const normalizedConverted = fullConverted.replace(/\s+/g, '');
+    const normalizedInput = fullText.replace(/\s+/g, '');
     const normalizedExpected = question.fullDisplay.replace(/\s+/g, '');
-    const isCorrect = hasConversion && normalizedConverted === normalizedExpected;
     
-    console.log('Result:', { hasConversion, normalizedConverted, normalizedExpected, isCorrect }); // デバッグログ
+    // IMEテスト:最終的な結果が正しければ入力方法に関係なく正解
+    const isCorrect = normalizedInput === normalizedExpected;
     
     if (isCorrect) {
         showFeedback('正解！次の問題に進みます', 'correct');
         setTimeout(() => {
             currentQuestionIndex++;
             loadQuestion();
-        }, 800);
+            isProcessing = false;
+        }, 1000);
     } else {
-        if (userAnswer.length > 0) {
-            feedbackEl.classList.remove('show', 'correct', 'incorrect');
+        // 間違いの場合は何もしない（入力を保持）
+        userInputEl.focus();
+        isProcessing = false;
+    }
+}
+
+function containsKanji(text) {
+    // 漢字が含まれているかチェック（ひらがな・カタカナ・英数字・記号以外）
+    return /[^\u3040-\u309F\u30A0-\u30FF\u0020-\u007E\uFF01-\uFF5E]/.test(text);
+}
+
+function removeKanji(text) {
+    // 漢字を削除してひらがなのみに戻す
+    return text.replace(/[^\u3040-\u309F]/g, '');
+}
+
+function updateComparisonDisplay(userConverted, expected) {
+    // 冒頭から一致している部分を見つける
+    let matchLength = 0;
+    const minLength = Math.min(userConverted.length, expected.length);
+    
+    for (let i = 0; i < minLength; i++) {
+        if (userConverted[i] === expected[i]) {
+            matchLength++;
+        } else {
+            break;
         }
     }
+    
+    // 期待される結果の表示
+    let expectedHTML = '<span class="label">期待される結果:</span> ';
+    if (matchLength > 0) {
+        expectedHTML += `<span class="match">${expected.substring(0, matchLength)}</span>`;
+    }
+    if (matchLength < expected.length) {
+        expectedHTML += `<span class="no-match">${expected.substring(matchLength)}</span>`;
+    }
+    
+    // あなたの変換結果の表示
+    let convertedHTML = '<span class="label">あなたの変換結果:</span> ';
+    if (matchLength > 0) {
+        convertedHTML += `<span class="match">${userConverted.substring(0, matchLength)}</span>`;
+    }
+    if (matchLength < userConverted.length) {
+        convertedHTML += `<span class="no-match">${userConverted.substring(matchLength)}</span>`;
+    }
+    
+    expectedAnswerEl.innerHTML = expectedHTML;
+    userConvertedEl.innerHTML = convertedHTML;
 }
 
 function showFeedback(message, type) {
@@ -198,52 +247,20 @@ function endGame() {
     gameAreaEl.style.display = 'none';
     gameOverEl.classList.add('show');
     
-    showRankingForm();
+    // 自動でランキングに登録
+    autoSaveRanking();
+    showRankingDisplay();
 }
 
-function showRankingForm() {
+function autoSaveRanking() {
     const timeInSeconds = (totalTime / 1000).toFixed(2);
-    const rankingFormHTML = `
-        <div class="ranking-form">
-            <h3>ゲーム完了！</h3>
-            <p class="time-display">完了タイム: ${timeInSeconds}秒</p>
-            <input type="text" id="playerName" placeholder="名前を入力" maxlength="20">
-            <button id="saveRankingBtn" class="save-ranking-btn">ランキングに登録</button>
-        </div>
-        <div class="ranking-list" id="rankingList"></div>
-    `;
+    const defaultName = '無名' + Math.floor(Math.random() * 1000);
     
-    const existingRankingForm = document.querySelector('.ranking-form');
-    const existingRankingList = document.querySelector('.ranking-list');
-    if (existingRankingForm) existingRankingForm.remove();
-    if (existingRankingList) existingRankingList.remove();
-    
-    gameOverEl.insertAdjacentHTML('beforeend', rankingFormHTML);
-    
-    const saveBtn = document.getElementById('saveRankingBtn');
-    const nameInput = document.getElementById('playerName');
-    
-    saveBtn.addEventListener('click', () => saveRanking(timeInSeconds));
-    nameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') saveRanking(timeInSeconds);
-    });
-    
-    displayRankings();
-}
-
-function saveRanking(timeInSeconds) {
-    const nameInput = document.getElementById('playerName');
-    const name = nameInput.value.trim();
-    
-    if (!name) {
-        alert('名前を入力してください');
-        return;
-    }
-    
-    const rankings = JSON.parse(localStorage.getItem('typingGameRankings') || '[]');
+    const rankings = getRankings();
     const now = new Date();
     const newEntry = {
-        name: name,
+        id: Date.now() + Math.random(), // 一意なID
+        name: defaultName,
         time: parseFloat(timeInSeconds),
         date: now.toLocaleDateString('ja-JP', {
             year: 'numeric',
@@ -261,19 +278,94 @@ function saveRanking(timeInSeconds) {
     
     try {
         localStorage.setItem('typingGameRankings', JSON.stringify(rankings));
-        console.log('ランキングを保存しました:', newEntry);
+        localStorage.setItem('typingGameLastEntry', JSON.stringify(newEntry));
     } catch (error) {
         console.error('LocalStorageへの保存に失敗しました:', error);
-        alert('ランキングの保存に失敗しました。');
-        return;
     }
+}
+
+function showRankingDisplay() {
+    const timeInSeconds = (totalTime / 1000).toFixed(2);
+    const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
     
-    document.querySelector('.ranking-form').style.display = 'none';
+    const rankingDisplayHTML = `
+        <div class="ranking-display">
+            <h3>ゲーム完了！</h3>
+            <p class="time-display">完了タイム: ${timeInSeconds}秒</p>
+            <div class="name-edit">
+                <label>名前: </label>
+                <input type="text" id="playerName" value="${lastEntry.name || ''}" maxlength="20">
+                <button id="updateNameBtn" class="update-name-btn">名前更新</button>
+            </div>
+        </div>
+        <div class="ranking-list" id="rankingList"></div>
+    `;
+    
+    const existingDisplay = document.querySelector('.ranking-display');
+    const existingRankingList = document.querySelector('.ranking-list');
+    if (existingDisplay) existingDisplay.remove();
+    if (existingRankingList) existingRankingList.remove();
+    
+    gameOverEl.insertAdjacentHTML('beforeend', rankingDisplayHTML);
+    
+    const updateBtn = document.getElementById('updateNameBtn');
+    const nameInput = document.getElementById('playerName');
+    
+    updateBtn.addEventListener('click', () => updatePlayerName());
+    nameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') updatePlayerName();
+    });
+    
     displayRankings();
 }
 
+function updatePlayerName() {
+    const nameInput = document.getElementById('playerName');
+    const newName = nameInput.value.trim();
+    
+    if (!newName) {
+        alert('名前を入力してください');
+        return;
+    }
+    
+    const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
+    if (!lastEntry.id) return;
+    
+    const rankings = getRankings();
+    const entryIndex = rankings.findIndex(entry => entry.id === lastEntry.id);
+    
+    if (entryIndex !== -1) {
+        rankings[entryIndex].name = newName;
+        lastEntry.name = newName;
+        
+        try {
+            localStorage.setItem('typingGameRankings', JSON.stringify(rankings));
+            localStorage.setItem('typingGameLastEntry', JSON.stringify(lastEntry));
+            displayRankings();
+        } catch (error) {
+            console.error('LocalStorageへの保存に失敗しました:', error);
+        }
+    }
+}
+
+function getRankings() {
+    // 1日でリセットするランキング取得
+    const today = new Date().toDateString();
+    const lastResetDate = localStorage.getItem('typingGameLastReset');
+    
+    if (lastResetDate !== today) {
+        // 新しい日になったのでランキングをリセット
+        localStorage.setItem('typingGameRankings', JSON.stringify([]));
+        localStorage.setItem('typingGameLastReset', today);
+        localStorage.removeItem('typingGameLastEntry');
+        return [];
+    }
+    
+    return JSON.parse(localStorage.getItem('typingGameRankings') || '[]');
+}
+
 function displayRankings() {
-    const rankings = JSON.parse(localStorage.getItem('typingGameRankings') || '[]');
+    const rankings = getRankings();
     const rankingList = document.getElementById('rankingList');
     
     if (!rankingList) return;
@@ -304,6 +396,13 @@ function displayRankings() {
 }
 
 
+userInputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        checkAnswer();
+    }
+});
+
 userInputEl.addEventListener('input', (e) => {
     const text = e.target.value;
     
@@ -318,11 +417,18 @@ userInputEl.addEventListener('input', (e) => {
         return;
     }
     
-    checkAnswerRealtime();
+    // 入力中のリアルタイム表示（入力方法に関係なく結果を表示）
+    const userAnswer = text.replace(question.context, '').trim();
+    if (userAnswer) {
+        updateComparisonDisplay(text, question.fullDisplay);
+    } else {
+        userConvertedEl.innerHTML = '-';
+        expectedAnswerEl.innerHTML = `<span class="label">期待される結果:</span> ${question.fullDisplay}`;
+    }
 });
 
 function displayRankingPreview() {
-    const rankings = JSON.parse(localStorage.getItem('typingGameRankings') || '[]');
+    const rankings = getRankings();
     
     if (rankings.length === 0) {
         rankingPreviewEl.innerHTML = '';
