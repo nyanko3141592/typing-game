@@ -132,13 +132,11 @@ h1 {
 }
 
 .input-area {
-    display: flex;
-    gap: 10px;
     margin-bottom: 15px;
 }
 
 #userInput {
-    flex: 1;
+    width: 100%;
     padding: 15px;
     font-size: 1.2rem;
     border: 2px solid #e0e0e0;
@@ -154,25 +152,6 @@ h1 {
     border-color: #667eea;
 }
 
-.submit-btn {
-    padding: 15px 30px;
-    font-size: 1.1rem;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
-.submit-btn:active {
-    transform: translateY(0);
-}
 
 .expected-display {
     display: flex;
@@ -490,13 +469,6 @@ h1 {
         font-size: 1rem;
     }
     
-    .input-area {
-        flex-direction: column;
-    }
-    
-    .submit-btn {
-        width: 100%;
-    }
     
     #playerName {
         width: 100%;

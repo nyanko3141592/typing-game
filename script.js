@@ -136,19 +136,21 @@ function convertToKanji(hiragana, context) {
     return hiragana;
 }
 
-function checkAnswer() {
+function checkAnswerRealtime() {
+    if (!gameStarted) return;
+    
     const fullText = userInputEl.value;
     const question = gameQuestions[currentQuestionIndex];
     
-    if (!fullText.includes(question.context)) {
-        showFeedback('文脈を消さないでください', 'incorrect');
+    if (!fullText.startsWith(question.context)) {
         return;
     }
     
     const userAnswer = fullText.replace(question.context, '').trim();
     
     if (!userAnswer) {
-        showFeedback('回答を入力してください', 'incorrect');
+        userConvertedEl.textContent = '-';
+        feedbackEl.classList.remove('show', 'correct', 'incorrect');
         return;
     }
     
@@ -160,17 +162,15 @@ function checkAnswer() {
     const isCorrect = fullConverted === question.fullDisplay;
     
     if (isCorrect) {
-        currentQuestionIndex++;
-        loadQuestion();
-    } else {
-        showFeedback(`不正解。文脈に応じた変換が異なります`, 'incorrect');
+        showFeedback('正解！次の問題に進みます', 'correct');
         setTimeout(() => {
-            userInputEl.value = question.context;
-            const cursorPosition = question.context.length;
-            userInputEl.setSelectionRange(cursorPosition, cursorPosition);
-            userInputEl.focus();
-            feedbackEl.classList.remove('show', 'incorrect');
-        }, 1500);
+            currentQuestionIndex++;
+            loadQuestion();
+        }, 800);
+    } else {
+        if (userAnswer.length > 0) {
+            feedbackEl.classList.remove('show', 'correct', 'incorrect');
+        }
     }
 }
 
@@ -291,24 +291,22 @@ function displayRankings() {
     rankingList.innerHTML = html;
 }
 
-submitBtnEl.addEventListener('click', checkAnswer);
-
-userInputEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        checkAnswer();
-    }
-});
 
 userInputEl.addEventListener('input', (e) => {
     const text = e.target.value;
+    
+    if (!gameStarted || currentQuestionIndex >= gameQuestions.length) return;
+    
     const question = gameQuestions[currentQuestionIndex];
     
     if (!text.startsWith(question.context)) {
         e.target.value = question.context;
         const cursorPosition = question.context.length;
         e.target.setSelectionRange(cursorPosition, cursorPosition);
+        return;
     }
+    
+    checkAnswerRealtime();
 });
 
 function displayRankingPreview() {

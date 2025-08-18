@@ -19,7 +19,7 @@
                 <ul class="instructions-list">
                     <li>テキストフィールドに表示される文脈の続きを入力します</li>
                     <li>ひらがなで入力し、正しい漢字に変換されるかチェックします</li>
-                    <li>Cmd+Enter（Mac）/ Ctrl+Enter（Windows）で確定</li>
+                    <li>正解したら自動で次の問題に進みます</li>
                     <li>全問題完了までの時間を競います</li>
                 </ul>
                 <button id="startBtn" class="start-btn">ゲームスタート</button>
@@ -45,11 +45,10 @@
             <div class="question-area">
                 <div class="instruction">
                     <p>テキストフィールドの続きをひらがなで入力してください</p>
-                    <p class="hint">文脈の後に続きを入力して、Cmd+Enter（Mac）/ Ctrl+Enter（Windows）で確定</p>
+                    <p class="hint">正解したら自動で次の問題に進みます</p>
                 </div>
                 <div class="input-area">
-                    <textarea id="userInput" rows="3" placeholder="例: 雑誌にのります" autocomplete="off" spellcheck="false"></textarea>
-                    <button id="submitBtn" class="submit-btn">変換して確定</button>
+                    <textarea id="userInput" rows="3" placeholder="例: 雑誌にのります（正解したら自動で次の問題へ）" autocomplete="off" spellcheck="false"></textarea>
                 </div>
                 <div class="expected-display">
                     <div class="expected-answer">
