@@ -113,6 +113,7 @@ function loadQuestion() {
     }
 
     const question = gameQuestions[currentQuestionIndex];
+    console.log('Loading question:', question); // デバッグログ
     userInputEl.value = question.context;
     expectedAnswerEl.textContent = question.fullDisplay;
     userConvertedEl.textContent = '-';
@@ -142,6 +143,8 @@ function checkAnswerRealtime() {
     const fullText = userInputEl.value;
     const question = gameQuestions[currentQuestionIndex];
     
+    console.log('Checking:', { fullText, context: question.context, expected: question.fullDisplay }); // デバッグログ
+    
     if (!fullText.startsWith(question.context)) {
         return;
     }
@@ -157,6 +160,8 @@ function checkAnswerRealtime() {
     const convertedAnswer = convertToKanji(userAnswer, question.context);
     const fullConverted = question.context + convertedAnswer;
     
+    console.log('Conversion:', { userAnswer, convertedAnswer, fullConverted }); // デバッグログ
+    
     userConvertedEl.textContent = fullConverted;
     
     // ひらがなのままでは正解にしない（変換が発生した場合のみ正解判定）
@@ -165,6 +170,8 @@ function checkAnswerRealtime() {
     const normalizedConverted = fullConverted.replace(/\s+/g, '');
     const normalizedExpected = question.fullDisplay.replace(/\s+/g, '');
     const isCorrect = hasConversion && normalizedConverted === normalizedExpected;
+    
+    console.log('Result:', { hasConversion, normalizedConverted, normalizedExpected, isCorrect }); // デバッグログ
     
     if (isCorrect) {
         showFeedback('正解！次の問題に進みます', 'correct');
