@@ -48,6 +48,8 @@ h1 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .progress {
@@ -91,6 +93,24 @@ h1 {
 
 .reset-btn:hover {
     background: #5a6268;
+}
+
+.timer-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.timer-label {
+    color: #666;
+}
+
+#gameTimer {
+    color: #667eea;
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
 .question-area {
@@ -310,7 +330,6 @@ h1 {
 
 .ranking-entry {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
     background: #f8f9fa;
@@ -349,23 +368,32 @@ h1 {
     color: #333;
 }
 
-.name {
+.entry-details {
     flex: 1;
-    margin: 0 20px;
+    margin-left: 15px;
+}
+
+.name-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.name {
     font-weight: 500;
+    color: #333;
 }
 
 .time {
     font-weight: bold;
     color: #764ba2;
-    min-width: 80px;
-    text-align: right;
 }
 
 .date {
     color: #999;
-    font-size: 0.9rem;
-    margin-left: 20px;
+    font-size: 0.85rem;
+    line-height: 1.2;
 }
 
 .no-rankings {

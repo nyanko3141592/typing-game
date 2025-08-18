@@ -8,6 +8,7 @@ let startTime = 0;
 let totalTime = 0;
 let questionStartTime = 0;
 let gameStarted = false;
+let timerInterval = null;
 
 const userConvertedEl = document.getElementById('userConverted');
 const userInputEl = document.getElementById('userInput');
@@ -23,6 +24,7 @@ const startScreenEl = document.getElementById('startScreen');
 const startBtnEl = document.getElementById('startBtn');
 const resetBtnEl = document.getElementById('resetBtn');
 const rankingPreviewEl = document.getElementById('rankingPreview');
+const gameTimerEl = document.getElementById('gameTimer');
 
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -72,11 +74,32 @@ async function startGame() {
     startScreenEl.style.display = 'none';
     gameAreaEl.style.display = 'block';
     gameOverEl.classList.remove('show');
+    
+    startTimer();
     loadQuestion();
+}
+
+function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    timerInterval = setInterval(() => {
+        if (gameStarted) {
+            const elapsed = (Date.now() - startTime) / 1000;
+            gameTimerEl.textContent = elapsed.toFixed(1) + '秒';
+        }
+    }, 100);
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
 }
 
 function resetGame() {
     gameStarted = false;
+    stopTimer();
     startScreenEl.style.display = 'block';
     gameAreaEl.style.display = 'none';
     gameOverEl.classList.remove('show');
@@ -159,6 +182,7 @@ function showFeedback(message, type) {
 function endGame() {
     totalTime = Date.now() - startTime;
     gameStarted = false;
+    stopTimer();
     gameAreaEl.style.display = 'none';
     gameOverEl.classList.add('show');
     
@@ -205,16 +229,32 @@ function saveRanking(timeInSeconds) {
     }
     
     const rankings = JSON.parse(localStorage.getItem('typingGameRankings') || '[]');
-    rankings.push({
+    const now = new Date();
+    const newEntry = {
         name: name,
         time: parseFloat(timeInSeconds),
-        date: new Date().toLocaleDateString('ja-JP')
-    });
+        date: now.toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        })
+    };
     
+    rankings.push(newEntry);
     rankings.sort((a, b) => a.time - b.time);
     rankings.splice(10);
     
-    localStorage.setItem('typingGameRankings', JSON.stringify(rankings));
+    try {
+        localStorage.setItem('typingGameRankings', JSON.stringify(rankings));
+        console.log('ランキングを保存しました:', newEntry);
+    } catch (error) {
+        console.error('LocalStorageへの保存に失敗しました:', error);
+        alert('ランキングの保存に失敗しました。');
+        return;
+    }
     
     document.querySelector('.ranking-form').style.display = 'none';
     displayRankings();
@@ -236,9 +276,13 @@ function displayRankings() {
         html += `
             <li class="ranking-entry">
                 <span class="rank">${index + 1}位</span>
-                <span class="name">${entry.name}</span>
-                <span class="time">${entry.time}秒</span>
-                <span class="date">${entry.date}</span>
+                <div class="entry-details">
+                    <div class="name-time">
+                        <span class="name">${entry.name}</span>
+                        <span class="time">${entry.time}秒</span>
+                    </div>
+                    <div class="date">${entry.date}</div>
+                </div>
             </li>
         `;
     });
@@ -280,8 +324,13 @@ function displayRankingPreview() {
         html += `
             <li class="ranking-entry">
                 <span class="rank">${index + 1}位</span>
-                <span class="name">${entry.name}</span>
-                <span class="time">${entry.time}秒</span>
+                <div class="entry-details">
+                    <div class="name-time">
+                        <span class="name">${entry.name}</span>
+                        <span class="time">${entry.time}秒</span>
+                    </div>
+                    <div class="date">${entry.date}</div>
+                </div>
             </li>
         `;
     });
