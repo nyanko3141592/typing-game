@@ -152,28 +152,14 @@ function checkAnswer() {
     const fullText = userInputEl.value;
     const question = gameQuestions[currentQuestionIndex];
     
-    if (!fullText.startsWith(question.context)) {
-        showFeedback('文脈を消さないでください', 'incorrect');
-        isProcessing = false;
-        return;
-    }
-    
-    const userAnswer = fullText.replace(question.context, '').trim();
-    
-    if (!userAnswer) {
-        showFeedback('回答を入力してください', 'incorrect');
-        isProcessing = false;
-        return;
-    }
-    
-    // 比較表示を更新（入力されたテキストをそのまま使用）
+    // 比較表示を更新
     updateComparisonDisplay(fullText, question.fullDisplay);
     
     // 空白を無視して比較
     const normalizedInput = fullText.replace(/\s+/g, '');
     const normalizedExpected = question.fullDisplay.replace(/\s+/g, '');
     
-    // IMEテスト:最終的な結果が正しければ入力方法に関係なく正解
+    // 最終的な結果が正しければ入力方法に関係なく正解
     const isCorrect = normalizedInput === normalizedExpected;
     
     if (isCorrect) {
@@ -184,7 +170,7 @@ function checkAnswer() {
             isProcessing = false;
         }, 1000);
     } else {
-        // 間違いの場合は何もしない（入力を保持）
+        // 間違いの場合は何も表示せず、入力を保持
         userInputEl.focus();
         isProcessing = false;
     }
@@ -409,13 +395,6 @@ userInputEl.addEventListener('input', (e) => {
     if (!gameStarted || currentQuestionIndex >= gameQuestions.length) return;
     
     const question = gameQuestions[currentQuestionIndex];
-    
-    if (!text.startsWith(question.context)) {
-        e.target.value = question.context;
-        const cursorPosition = question.context.length;
-        e.target.setSelectionRange(cursorPosition, cursorPosition);
-        return;
-    }
     
     // 入力中のリアルタイム表示（入力方法に関係なく結果を表示）
     const userAnswer = text.replace(question.context, '').trim();
