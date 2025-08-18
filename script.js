@@ -159,7 +159,9 @@ function checkAnswerRealtime() {
     
     userConvertedEl.textContent = fullConverted;
     
-    const isCorrect = fullConverted === question.fullDisplay;
+    // ひらがなのままでは正解にしない（変換が発生した場合のみ正解判定）
+    const hasConversion = convertedAnswer !== userAnswer;
+    const isCorrect = hasConversion && fullConverted === question.fullDisplay;
     
     if (isCorrect) {
         showFeedback('正解！次の問題に進みます', 'correct');
