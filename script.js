@@ -161,7 +161,10 @@ function checkAnswerRealtime() {
     
     // ひらがなのままでは正解にしない（変換が発生した場合のみ正解判定）
     const hasConversion = convertedAnswer !== userAnswer;
-    const isCorrect = hasConversion && fullConverted === question.fullDisplay;
+    // 空白を無視して比較
+    const normalizedConverted = fullConverted.replace(/\s+/g, '');
+    const normalizedExpected = question.fullDisplay.replace(/\s+/g, '');
+    const isCorrect = hasConversion && normalizedConverted === normalizedExpected;
     
     if (isCorrect) {
         showFeedback('正解！次の問題に進みます', 'correct');
