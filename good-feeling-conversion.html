@@ -155,25 +155,61 @@
         }
         
         
-        .expected-output {
-            background: #e8f5e8;
-            border: 2px solid #4caf50;
-            border-radius: 10px;
+        .conversion-process {
+            background: linear-gradient(135deg, #f8f9ff, #f0f4ff);
+            border: 2px solid #e0e7ff;
+            border-radius: 15px;
             padding: 20px;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         
-        .expected-output h4 {
-            color: #2e7d32;
-            margin: 0 0 10px 0;
-            font-size: 1.1rem;
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin: 12px 0;
+            padding: 10px 0;
         }
         
-        .expected-text {
-            color: #333;
-            font-size: 1rem;
-            line-height: 1.5;
-            margin: 0;
+        .process-step:not(:last-child) {
+            border-bottom: 1px solid #e0e7ff;
+            padding-bottom: 15px;
+        }
+        
+        .step-label {
+            font-weight: bold;
+            color: #4f46e5;
+            min-width: 120px;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .original-text {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+        
+        .prompt-text {
+            background: linear-gradient(135deg, #fff3e0, #ffcc02);
+            color: #e65100;
+            font-family: 'Courier New', monospace;
+            border: 1px solid #ffb74d;
+            font-weight: bold;
+        }
+        
+        .result-text {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c8);
+            color: #1b5e20;
+            border: 1px solid #81c784;
+            font-weight: bold;
         }
         
         .back-link {
@@ -397,9 +433,19 @@
                         <div class="demo-playground">
                             <textarea class="demo-textarea" placeholder="変換プロンプト: English">私は直希です。よろしくお願いします。</textarea>
                         </div>
-                        <div class="expected-output">
-                            <h4>期待される変換結果</h4>
-                            <p class="expected-text">I am Naoki. Nice to meet you.</p>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-content original-text">私は直希です。よろしくお願いします。</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. プロンプト:</span>
+                                <span class="step-content prompt-text">English</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 結果:</span>
+                                <span class="step-content result-text">I am Naoki. Nice to meet you.</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -414,9 +460,19 @@
                         <div class="demo-playground">
                             <textarea class="demo-textarea" placeholder="変換プロンプト: 絵文字でデコって">今日はテンション上がるね。頑張ろう！</textarea>
                         </div>
-                        <div class="expected-output">
-                            <h4>期待される変換結果</h4>
-                            <p class="expected-text">🎉 今日は ✨ テンション 📈 上がるね 😄！💪 頑張ろう 🔥！</p>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-content original-text">今日はテンション上がるね。頑張ろう！</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. プロンプト:</span>
+                                <span class="step-content prompt-text">絵文字でデコって</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 結果:</span>
+                                <span class="step-content result-text">🎉 今日は ✨ テンション 📈 上がるね 😄！💪 頑張ろう 🔥！</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -431,9 +487,19 @@
                         <div class="demo-playground">
                             <textarea class="demo-textarea" placeholder="変換プロンプト: ビジネスメールとして修正">お世話に〜。直希です。資料できたから送るね。</textarea>
                         </div>
-                        <div class="expected-output">
-                            <h4>期待される変換結果</h4>
-                            <p class="expected-text">お世話になっております。直希でございます。資料が完成いたしましたので、送付させていただきます。</p>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-content original-text">お世話に〜。直希です。資料できたから送るね。</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. プロンプト:</span>
+                                <span class="step-content prompt-text">ビジネスメールとして修正</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 結果:</span>
+                                <span class="step-content result-text">お世話になっております。直希でございます。資料が完成いたしましたので、送付させていただきます。</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -448,9 +514,19 @@
                         <div class="demo-playground">
                             <textarea class="demo-textarea" placeholder="変換プロンプト: カジュアルに変換">本日はお忙しい中、貴重なお時間をいただき、誠にありがとうございました。</textarea>
                         </div>
-                        <div class="expected-output">
-                            <h4>期待される変換結果</h4>
-                            <p class="expected-text">今日は忙しい中、時間作ってくれてありがとう！</p>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-content original-text">本日はお忙しい中、貴重なお時間をいただき、誠にありがとうございました。</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. プロンプト:</span>
+                                <span class="step-content prompt-text">カジュアルに変換</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 結果:</span>
+                                <span class="step-content result-text">今日は忙しい中、時間作ってくれてありがとう！</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -465,9 +541,19 @@
                         <div class="demo-playground">
                             <textarea class="demo-textarea" placeholder="変換プロンプト: 敬語に変換">会議は明日の10時からです。資料を用意してください。</textarea>
                         </div>
-                        <div class="expected-output">
-                            <h4>期待される変換結果</h4>
-                            <p class="expected-text">会議は明日の10時からでございます。資料をご用意いただけますでしょうか。</p>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-content original-text">会議は明日の10時からです。資料を用意してください。</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. プロンプト:</span>
+                                <span class="step-content prompt-text">敬語に変換</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 結果:</span>
+                                <span class="step-content result-text">会議は明日の10時からでございます。資料をご用意いただけますでしょうか。</span>
+                            </div>
                         </div>
                     </div>
                 </div>
