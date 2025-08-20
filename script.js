@@ -16,7 +16,7 @@ let correctCount = 0;
 // DOM要素は関数内で取得（初期化後に取得）
 let userConvertedEl, userInputEl, submitBtnEl, expectedAnswerEl, feedbackEl;
 let currentQuestionEl, progressFillEl, gameOverEl, gameAreaEl, startScreenEl;
-let startBtnEl, resetBtnEl, rankingPreviewEl, gameTimerEl;
+let startBtnEl, resetBtnEl, retireBtnEl, rankingPreviewEl, gameTimerEl;
 
 // いい感じ変換デモ関連の要素（後で初期化）
 let tryConversionBtn, conversionDemoEl, closeDemoBtnEl, backToGameBtnEl;
@@ -106,6 +106,12 @@ async function startGame() {
     gameAreaEl.style.display = 'block';
     gameOverEl.classList.remove('show');
     
+    // ヘッダーを非表示
+    const headerEl = document.querySelector('header');
+    if (headerEl) {
+        headerEl.style.display = 'none';
+    }
+    
     startTimer();
     loadQuestion();
 }
@@ -147,10 +153,43 @@ function resetGame() {
     correctCount = 0;
     currentQuestionIndex = 0;
     
+    // ヘッダーを再表示
+    const headerEl = document.querySelector('header');
+    if (headerEl) {
+        headerEl.style.display = 'block';
+    }
+    
     startScreenEl.style.display = 'block';
     gameAreaEl.style.display = 'none';
     gameOverEl.classList.remove('show');
+    
+    if (gameTimerEl) {
+        gameTimerEl.textContent = '0.0';
+    }
+    
     displayRankingPreview();
+}
+
+function retireGame() {
+    if (!gameStarted) return;
+    
+    if (confirm('ゲームをリタイアしますか？（スコアは0点になります）')) {
+        gameStarted = false;
+        stopTimer();
+        
+        if (questionTimer) {
+            clearInterval(questionTimer);
+        }
+        
+        // 結果を表示（スコア0点、正解数は現在までの数、経過時間は現在までの時間）
+        const currentTime = gameStarted ? 0 : (Date.now() - startTime) / 1000;
+        
+        // ランキングに保存（スコア0点）
+        saveRanking(0, correctCount, currentTime);
+        
+        // 結果表示（スコア0点）
+        displayResult(0, correctCount, currentTime);
+    }
 }
 
 function loadQuestion() {
@@ -590,6 +629,12 @@ function displayResult(score, correct, time) {
     gameAreaEl.style.display = 'none';
     gameOverEl.classList.add('show');
     
+    // ヘッダーを再表示
+    const headerEl = document.querySelector('header');
+    if (headerEl) {
+        headerEl.style.display = 'block';
+    }
+    
     const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
     const dailySushiCount = getDailySushiCount();
     
@@ -598,8 +643,8 @@ function displayResult(score, correct, time) {
             <div class="result-header">
                 <div class="completion-badge">
                     <div class="badge-icon">🎉</div>
-                    <h2 class="completion-title">お疲れさまでした！</h2>
-                    <p class="completion-subtitle">azooKey on macOSの体験はいかがでしたか？</p>
+                    <h2 class="completion-title">ゲームクリア！</h2>
+                    <p class="completion-subtitle">azooKeyの高精度変換を体験できました</p>
                 </div>
             </div>
             
@@ -631,49 +676,81 @@ function displayResult(score, correct, time) {
                     </div>
                 </div>
 
-                <div class="stats-section">
-                    <div class="daily-stats">
-                        <h4>📅 本日の累計</h4>
-                        <div class="daily-count">${dailySushiCount}問の正解を獲得</div>
-                    </div>
-                </div>
 
-                <div class="name-registration">
-                    <h4>ランキングに登録</h4>
-                    <div class="name-input-group">
-                        <input type="text" id="playerName" value="${lastEntry.name || ''}" placeholder="お名前を入力してください" maxlength="20">
-                        <button id="updateNameBtn" class="register-btn">登録</button>
+                <div class="ranking-section">
+                    <div class="ranking-header">
+                        <h3>🏆 ランキング</h3>
+                        <p class="ranking-subtitle">あなたのスコアをチェック！</p>
+                    </div>
+                    
+                    <div class="name-registration">
+                        <h4>ランキングに登録</h4>
+                        <div class="name-input-group">
+                            <input type="text" id="playerName" value="${lastEntry.name || ''}" placeholder="お名前を入力してください" maxlength="20">
+                            <button id="updateNameBtn" class="register-btn">登録</button>
+                        </div>
+                    </div>
+                    
+                    <div class="ranking-list" id="rankingList"></div>
+                    <div class="ranking-footer">
+                        <p class="next-step-hint">👆 ランキングを確認したら、次のステップへ！</p>
                     </div>
                 </div>
 
                 <div class="conversion-tour-section">
+                    <div class="tour-divider">
+                        <div class="divider-line"></div>
+                        <div class="divider-text">🎯 次のチャレンジ</div>
+                        <div class="divider-line"></div>
+                    </div>
                     <div class="tour-highlight">
-                        <h4>🎉 お疲れさまでした！次はもう一つの革新機能を体験しませんか？</h4>
+                        <div class="tour-intro">
+                            <h4>✨ 文脈変換を体験しました！<br>今度は「いい感じ変換」を試してみませんか？</h4>
+                            <p class="tour-description">azooKeyのもう一つの革新機能で、さらなる生産性向上を実現しましょう</p>
+                        </div>
                         <div class="next-feature-preview">
                             <div class="feature-preview-card">
                                 <div class="preview-header">
+                                    <div class="feature-badge">NEW FEATURE</div>
                                     <h5>🤖 いい感じ変換</h5>
                                     <p class="preview-subtitle">プロンプト1つで文章を自在に変換</p>
                                 </div>
                                 <div class="preview-example">
-                                    <div class="example-before">「今日は疲れた」を選択</div>
-                                    <div class="example-action">Ctrl+S → "English"</div>
-                                    <div class="example-after">「I'm tired today」</div>
+                                    <div class="example-step">
+                                        <span class="step-number">1</span>
+                                        <div class="example-before">「今日は疲れた」を選択</div>
+                                    </div>
+                                    <div class="example-step">
+                                        <span class="step-number">2</span>
+                                        <div class="example-action">Ctrl+S → "English"</div>
+                                    </div>
+                                    <div class="example-step">
+                                        <span class="step-number">3</span>
+                                        <div class="example-after">「I'm tired today」</div>
+                                    </div>
                                 </div>
                                 <div class="preview-benefits">
-                                    <span class="benefit-tag">English変換</span>
-                                    <span class="benefit-tag">絵文字デコ</span>
-                                    <span class="benefit-tag">敬語変換</span>
-                                    <span class="benefit-tag">カジュアル化</span>
+                                    <span class="benefit-tag">🌍 English変換</span>
+                                    <span class="benefit-tag">😄 絵文字デコ</span>
+                                    <span class="benefit-tag">🙏 敬語変換</span>
+                                    <span class="benefit-tag">😊 カジュアル化</span>
                                 </div>
-                                <a href="good-feeling-conversion.html" class="next-experience-btn">🚀 いい感じ変換を体験する</a>
+                                <div class="cta-section">
+                                    <a href="good-feeling-conversion.html" class="next-experience-btn">
+                                        <span class="btn-icon">🚀</span>
+                                        <span class="btn-text">いい感じ変換を体験する</span>
+                                        <span class="btn-arrow">→</span>
+                                    </a>
+                                    <p class="cta-note">所要時間: 約3分</p>
+                                </div>
                             </div>
                         </div>
                         <div class="completion-message">
-                            <p>✨ 文脈変換とプロンプト変換、両方体験してazooKeyの全貌を知ろう！</p>
+                            <p>💡 文脈変換 + プロンプト変換 = azooKeyの真の実力を体感しよう！</p>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="actions-section">
                     <button id="restartBtn" class="action-btn primary">もう一度プレイ</button>
@@ -681,10 +758,6 @@ function displayResult(score, correct, time) {
                         azooKey on macOSについて詳しく
                     </a>
                 </div>
-            </div>
-            
-            <div class="ranking-section">
-                <div class="ranking-list" id="rankingList"></div>
             </div>
         </div>
     `;
@@ -839,11 +912,26 @@ function initializePage() {
     const showcaseEl = document.getElementById('azookeyShowcase');
     const startScreenEl = document.getElementById('startScreen');
     
-    if (showcaseEl) {
-        showcaseEl.style.display = 'block';
-    }
-    if (startScreenEl) {
-        startScreenEl.style.display = 'none';
+    // 初回訪問かどうかをチェック
+    const hasVisited = localStorage.getItem('azookey_visited');
+    
+    if (!hasVisited) {
+        // 初回訪問時のみショーケースを表示
+        if (showcaseEl) {
+            showcaseEl.style.display = 'block';
+        }
+        if (startScreenEl) {
+            startScreenEl.style.display = 'none';
+        }
+        localStorage.setItem('azookey_visited', 'true');
+    } else {
+        // 既訪問時はショーケースをスキップしてゲーム画面を表示
+        if (showcaseEl) {
+            showcaseEl.style.display = 'none';
+        }
+        if (startScreenEl) {
+            startScreenEl.style.display = 'block';
+        }
     }
 }
 
@@ -862,6 +950,7 @@ function initializeElements() {
     startScreenEl = document.getElementById('startScreen');
     startBtnEl = document.getElementById('startBtn');
     resetBtnEl = document.getElementById('resetBtn');
+    retireBtnEl = document.getElementById('retireBtn');
     rankingPreviewEl = document.getElementById('rankingPreview');
     gameTimerEl = document.getElementById('gameTimer');
 
@@ -935,6 +1024,10 @@ function setupEventListeners() {
     
     if (resetBtnEl) {
         resetBtnEl.addEventListener('click', resetGame);
+    }
+    
+    if (retireBtnEl) {
+        retireBtnEl.addEventListener('click', retireGame);
     }
 
     // いい感じ変換デモのイベントリスナー
