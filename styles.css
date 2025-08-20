@@ -3508,3 +3508,311 @@ h1 {
         max-width: 1000px;
     }
 }
+
+/* UI説明画面のスタイル */
+.ui-instructions {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.ui-instructions-content {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+    animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ui-instructions h2 {
+    text-align: center;
+    color: #2e7d32;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    font-weight: 800;
+}
+
+/* ゲームスクリーンショット部分 */
+.game-screenshot {
+    margin: 20px 0;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.game-screenshot img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 15px;
+}
+
+/* シンプルな説明 */
+.simple-instructions {
+    margin: 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.simple-rule {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border-left: 5px solid #4caf50;
+}
+
+.rule-emoji {
+    font-size: 2.5rem;
+}
+
+.rule-text {
+    font-size: 1.4rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.instruction-steps {
+    margin-bottom: 30px;
+}
+
+.instruction-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+    border-radius: 15px;
+    border-left: 5px solid #4caf50;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.step-content h3 {
+    color: #2e7d32;
+    margin-bottom: 8px;
+    font-size: 1.3rem;
+}
+
+.step-content p {
+    color: #555;
+    line-height: 1.6;
+}
+
+.ui-visual-guide {
+    background: linear-gradient(135deg, #fff3e0 0%, #fce4ec 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.ui-visual-guide h3 {
+    color: #f57c00;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.ui-elements {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.ui-element {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.element-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+}
+
+.element-desc {
+    flex: 1;
+}
+
+.element-desc strong {
+    color: #f57c00;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.countdown-start-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+    margin-top: 20px;
+}
+
+.countdown-start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(76, 175, 80, 0.4);
+}
+
+/* カウントダウン画面のスタイル */
+.countdown-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.countdown-content {
+    text-align: center;
+    color: white;
+    animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.countdown-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    font-weight: 800;
+}
+
+.countdown-number {
+    font-size: 8rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: countdownPulse 1s ease-in-out;
+}
+
+@keyframes countdownPulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.countdown-text {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 0.9;
+        transform: translateY(0);
+    }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .ui-instructions-content {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .ui-instructions h2 {
+        font-size: 2rem;
+    }
+    
+    .instruction-step {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .step-number {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .ui-elements {
+        grid-template-columns: 1fr;
+    }
+    
+    .countdown-content h2 {
+        font-size: 2rem;
+    }
+    
+    .countdown-number {
+        font-size: 6rem;
+    }
+    
+    .countdown-text {
+        font-size: 1.2rem;
+    }
+}

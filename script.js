@@ -63,8 +63,54 @@ async function initGame() {
     displayRankingPreview();
 }
 
-async function startGame() {
-    console.log('startGame called');
+function showUIInstructions() {
+    const uiInstructionsEl = document.getElementById('uiInstructions');
+    if (uiInstructionsEl) {
+        uiInstructionsEl.style.display = 'flex';
+    }
+}
+
+function hideUIInstructions() {
+    const uiInstructionsEl = document.getElementById('uiInstructions');
+    if (uiInstructionsEl) {
+        uiInstructionsEl.style.display = 'none';
+    }
+}
+
+function startCountdown() {
+    hideUIInstructions();
+    const countdownScreenEl = document.getElementById('countdownScreen');
+    const countdownNumberEl = document.getElementById('countdownNumber');
+    
+    if (countdownScreenEl) {
+        countdownScreenEl.style.display = 'flex';
+    }
+    
+    let count = 3;
+    
+    const countdownInterval = setInterval(() => {
+        if (countdownNumberEl) {
+            countdownNumberEl.textContent = count;
+            countdownNumberEl.style.animation = 'none';
+            setTimeout(() => {
+                countdownNumberEl.style.animation = 'countdownPulse 1s ease-in-out';
+            }, 10);
+        }
+        
+        count--;
+        
+        if (count < 0) {
+            clearInterval(countdownInterval);
+            if (countdownScreenEl) {
+                countdownScreenEl.style.display = 'none';
+            }
+            actuallyStartGame();
+        }
+    }, 1000);
+}
+
+async function actuallyStartGame() {
+    console.log('actuallyStartGame called');
     console.log('questionsLoaded:', questionsLoaded);
     console.log('questions length:', questions.length);
     
@@ -114,6 +160,21 @@ async function startGame() {
     
     startTimer();
     loadQuestion();
+}
+
+// 元のstartGame関数を変更してUI説明画面を表示
+async function startGame() {
+    // 問題データの事前読み込み
+    if (!questionsLoaded || questions.length === 0) {
+        await loadQuestionsFromJSON();
+    }
+    
+    if (questions.length === 0) {
+        alert('問題データの読み込みに失敗しました。');
+        return;
+    }
+    
+    showUIInstructions();
 }
 
 function startTimer() {
@@ -1020,6 +1081,12 @@ function setupEventListeners() {
     
     if (startBtnEl) {
         startBtnEl.addEventListener('click', startGame);
+    }
+    
+    // UI説明画面のカウントダウン開始ボタン
+    const startCountdownBtnEl = document.getElementById('startCountdownBtn');
+    if (startCountdownBtnEl) {
+        startCountdownBtnEl.addEventListener('click', startCountdown);
     }
     
     if (resetBtnEl) {

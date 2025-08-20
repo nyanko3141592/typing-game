@@ -273,6 +273,40 @@
             </div>
         </div>
 
+        <!-- UI説明画面 -->
+        <div class="ui-instructions" id="uiInstructions" style="display: none;">
+            <div class="ui-instructions-content">
+                <h2>🎮 遊び方</h2>
+                
+                <!-- ゲーム画面のスクリーンショット -->
+                <div class="game-screenshot">
+                    <img id="gameScreenshot" src="screenshot.png" alt="ゲーム画面">
+                </div>
+                
+                <div class="simple-instructions">
+                    <div class="simple-rule">
+                        <span class="rule-emoji">🍣</span>
+                        <span class="rule-text">寿司が流れきる前に入力</span>
+                    </div>
+                    <div class="simple-rule">
+                        <span class="rule-emoji">⌨️</span>
+                        <span class="rule-text">画面中央の文章を入力してEnter</span>
+                    </div>
+                </div>
+                
+                <button id="startCountdownBtn" class="countdown-start-btn">スタート！</button>
+            </div>
+        </div>
+
+        <!-- カウントダウン画面 -->
+        <div class="countdown-screen" id="countdownScreen" style="display: none;">
+            <div class="countdown-content">
+                <h2>🚀 ゲーム開始まで</h2>
+                <div class="countdown-number" id="countdownNumber">3</div>
+                <p class="countdown-text">準備はいいですか？</p>
+            </div>
+        </div>
+
         <div class="game-area" style="display: none;">
             <div class="sushi-header">
                 <div class="time-counter">
