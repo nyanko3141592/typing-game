@@ -9,80 +9,248 @@
 <body>
     <div class="container">
         <header>
-            <h1>🍣 Context Conversion Challenge 🍣</h1>
-            <p class="subtitle">文脈を読んで変換する日本語IME向けタイピングゲーム</p>
+            <div class="hero-section">
+                <h1>🚀 azooKey on macOS</h1>
+                <p class="hero-subtitle">次世代日本語IME - 革命的な高精度変換を体験</p>
+                <div class="hero-features">
+                    <div class="feature-highlight">
+                        <span class="feature-icon">🧠</span>
+                        <span class="feature-text">AI搭載の文脈理解</span>
+                    </div>
+                    <div class="feature-highlight">
+                        <span class="feature-icon">⚡</span>
+                        <span class="feature-text">ライブ変換</span>
+                    </div>
+                    <div class="feature-highlight">
+                        <span class="feature-icon">🤖</span>
+                        <span class="feature-text">いい感じ変換</span>
+                    </div>
+                </div>
+            </div>
         </header>
+
+        <!-- azooKey on macOS メイン紹介セクション -->
+        <div class="azookey-showcase" id="azookeyShowcase">
+            <div class="showcase-content">
+                <div class="showcase-header">
+                    <h2>🎯 なぜazooKey on macOSが革新的なのか？</h2>
+                    <p class="showcase-subtitle">従来のIMEとは次元の違う高精度変換を実現</p>
+                </div>
+                
+                <div class="showcase-features">
+                    <div class="showcase-feature-card">
+                        <div class="feature-card-header">
+                            <h3>📝 長文一括変換の威力</h3>
+                        </div>
+                        <div class="feature-card-content">
+                            <p><strong>従来のIME：</strong> 短い文節ごとに確定が必要</p>
+                            <p><strong>azooKey：</strong> 文章全体を理解して一括変換</p>
+                            <div class="comparison-example">
+                                <div class="old-way">
+                                    <span class="label">従来</span>
+                                    <span class="text">猫を→確定→飼う→確定</span>
+                                </div>
+                                <div class="new-way">
+                                    <span class="label">azooKey</span>
+                                    <span class="text">ねこをかう → 猫を飼う（一括変換）</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="showcase-feature-card">
+                        <div class="feature-card-header">
+                            <h3>🧠 文脈を読む賢い変換</h3>
+                        </div>
+                        <div class="feature-card-content">
+                            <p>同じ音でも前後の文脈で適切な漢字を自動選択</p>
+                            <div class="context-examples">
+                                <div class="context-example">
+                                    <span class="context">猫を</span>
+                                    <span class="reading">かう</span>
+                                    <span class="arrow">→</span>
+                                    <span class="result">飼う</span>
+                                </div>
+                                <div class="context-example">
+                                    <span class="context">リンゴを</span>
+                                    <span class="reading">かう</span>
+                                    <span class="arrow">→</span>
+                                    <span class="result">買う</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="showcase-feature-card">
+                        <div class="feature-card-header">
+                            <h3>🤖 いい感じ変換</h3>
+                        </div>
+                        <div class="feature-card-content">
+                            <p>テキスト選択 + Ctrl+S でプロンプト変換</p>
+                            <div class="conversion-preview">
+                                <div class="conversion-item">
+                                    <span class="original">今日は疲れた</span>
+                                    <span class="prompt">→ English</span>
+                                    <span class="result">I'm tired today</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="experience-flow">
+                    <h3>💫 azooKey体験の流れ</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>高精度変換を体験</h4>
+                                <p>タイピングゲームで文脈変換の威力を実感</p>
+                                <button class="step-btn" onclick="startTypingDemo()">体験開始</button>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>いい感じ変換を試す</h4>
+                                <p>プロンプト変換の便利さを体験</p>
+                                <a href="good-feeling-conversion.html" class="step-btn">いい感じ変換デモ</a>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>azooKeyを導入</h4>
+                                <p>実際にazooKey on macOSをインストール</p>
+                                <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="step-btn download-btn">ダウンロード</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="start-screen" id="startScreen">
             <div class="start-content">
-                <h2>🎮 azooKey on macOS 体験ゲーム</h2>
+                <h2>🎮 長文変換の威力を体験</h2>
                 <div class="ime-features">
-                    <h3>✨ azooKey on macOSの特徴</h3>
+                    <h3>✨ このゲームで体験できること</h3>
                     <p class="feature-description">
-                        azooKey on macOSは<strong>文脈を理解する賢いIME</strong>です！
+                        azooKey on macOSの<strong>文脈理解による高精度変換</strong>を体感！
                     </p>
                     <ul class="feature-list">
                         <li>📖 前後の文脈を読んで適切な漢字に変換</li>
                         <li>⚡ ライブ変換で確定せずに一気に入力可能</li>
                         <li>🧠 文章全体を理解して正確な変換を実現</li>
+                        <li>💪 長い文章ほど変換精度が向上</li>
                     </ul>
                 </div>
                 <div class="game-instructions">
-                    <h3>🍣 ゲームの遊び方</h3>
-                    <p class="game-description">
-                        <strong>文章を一気に最後まで入力してください！</strong><br>
-                        途中で確定せず、最後にEnterキーを押すだけでOK
-                    </p>
+                    <h3>🎯 ライブ変換の威力を実感しよう</h3>
+                    <div class="live-conversion-benefits">
+                        <div class="benefit-card">
+                            <div class="benefit-icon">⚡</div>
+                            <div class="benefit-content">
+                                <h4>ストレスフリーな入力</h4>
+                                <p>確定の手間なし、思考の流れを止めません</p>
+                            </div>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">🧠</div>
+                            <div class="benefit-content">
+                                <h4>文章全体で判断</h4>
+                                <p>長い文章ほど文脈理解の精度が向上</p>
+                            </div>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">🎯</div>
+                            <div class="benefit-content">
+                                <h4>高精度変換</h4>
+                                <p>従来IMEでは困難な複雑な文脈も正確に判断</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-challenge">
+                        <h4>💪 チャレンジ内容</h4>
+                        <p class="challenge-description">
+                            <strong>文章を一気に最後まで入力してください！</strong><br>
+                            確定せずに連続入力することで、azooKeyの真の実力を体感できます
+                        </p>
+                        
+                        <div class="challenge-comparison">
+                            <div class="old-ime-way">
+                                <h5>❌ 従来IMEの場合</h5>
+                                <div class="typing-flow">
+                                    <span class="step">雑誌に</span>
+                                    <span class="confirm">確定</span>
+                                    <span class="step">のります</span>
+                                    <span class="confirm">選択</span>
+                                    <span class="confirm">確定</span>
+                                </div>
+                                <p class="flow-description">文節ごとに確定・選択が必要</p>
+                            </div>
+                            
+                            <div class="azookey-way">
+                                <h5>✅ azooKeyライブ変換</h5>
+                                <div class="typing-flow">
+                                    <span class="step">ざっしにのります</span>
+                                    <span class="auto-convert">自動変換</span>
+                                    <span class="final">雑誌に載ります</span>
+                                </div>
+                                <p class="flow-description">一気に入力、文脈で自動判断</p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="example-box">
-                        <p class="example-title">例：同じ音でも前の文脈で変換が変わる！</p>
+                        <p class="example-title">🔥 超高難度な文脈変換例</p>
+                        <p class="example-subtitle">前の文章によって、後ろの「かう」の変換が決まります</p>
                         <div class="example-grid">
                             <div class="example-category">
-                                <p class="category-title">「かう」の変換</p>
-                                <div class="example-item">
-                                    <span class="example-input">ねこをかう</span>
+                                <p class="category-title">前文：猫を</p>
+                                <div class="example-item advanced">
+                                    <span class="example-context">猫を</span>
+                                    <span class="example-input">かう</span>
                                     <span class="example-arrow">→</span>
-                                    <span class="example-output">猫を飼う</span>
+                                    <span class="example-output">飼う</span>
                                 </div>
-                                <div class="example-item">
-                                    <span class="example-input">りんごをかう</span>
+                                <div class="example-item advanced">
+                                    <span class="example-context">リンゴを</span>
+                                    <span class="example-input">かう</span>
                                     <span class="example-arrow">→</span>
-                                    <span class="example-output">リンゴを買う</span>
+                                    <span class="example-output">買う</span>
                                 </div>
                             </div>
                             <div class="example-category">
-                                <p class="category-title">「のります」の変換</p>
-                                <div class="example-item">
-                                    <span class="example-input">雑誌に→のります</span>
+                                <p class="category-title">前文：雑誌に</p>
+                                <div class="example-item advanced">
+                                    <span class="example-context">雑誌に</span>
+                                    <span class="example-input">のります</span>
                                     <span class="example-arrow">→</span>
                                     <span class="example-output">載ります</span>
                                 </div>
-                                <div class="example-item">
-                                    <span class="example-input">車に→のります</span>
+                                <div class="example-item advanced">
+                                    <span class="example-context">電車に</span>
+                                    <span class="example-input">のります</span>
                                     <span class="example-arrow">→</span>
                                     <span class="example-output">乗ります</span>
                                 </div>
                             </div>
-                            <div class="example-category">
-                                <p class="category-title">「かみとかしてます」の変換</p>
-                                <div class="example-item">
-                                    <span class="example-input">悟りを開きました→かみとかしてます</span>
-                                    <span class="example-arrow">→</span>
-                                    <span class="example-output">神と化してます</span>
-                                </div>
-                                <div class="example-item">
-                                    <span class="example-input">風呂上がりです→かみとかしてます</span>
-                                    <span class="example-arrow">→</span>
-                                    <span class="example-output">髪とかしてます</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                    <ul class="instructions-list">
-                        <li>ひらがなで表示される文章を入力</li>
-                        <li>一気に最後まで入力（途中確定不要）</li>
-                        <li>Enterキーで確定→正解なら次の問題へ</li>
-                        <li>全10問の完了時間を競おう！</li>
-                    </ul>
+                    
+                    <div class="game-rules">
+                        <h4>📝 ゲームルール</h4>
+                        <ul class="instructions-list">
+                            <li><span class="rule-icon">🎮</span>ひらがなで表示される文章を入力</li>
+                            <li><span class="rule-icon">⚡</span>一気に最後まで入力（途中確定絶対NG）</li>
+                            <li><span class="rule-icon">✅</span>Enterキーで確定→正解なら次の問題へ</li>
+                            <li><span class="rule-icon">🏆</span>全10問の完了時間とスコアを競おう！</li>
+                        </ul>
+                    </div>
                 </div>
                 <button id="startBtn" class="start-btn">ゲームスタート</button>
                 <div class="ime-link">
@@ -91,16 +259,6 @@
                     </a>
                 </div>
                 
-                <!-- いい感じ変換デモセクション -->
-                <div class="conversion-demo-section">
-                    <h3>🤖 いい感じ変換を体験</h3>
-                    <p class="demo-description">
-                        テキストを選択してCtrl+Sで、プロンプトに応じて文章を変換できます！
-                    </p>
-                    <div class="conversion-links">
-                        <a href="good-feeling-conversion.html" class="conversion-link">🤖 いい感じ変換を体験</a>
-                    </div>
-                </div>
                 
                 <div class="ranking-preview" id="rankingPreview"></div>
             </div>

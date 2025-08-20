@@ -13,53 +13,21 @@ let isProcessing = false;
 let questionTimer = null;
 let correctCount = 0;
 
-const userConvertedEl = document.getElementById('userConverted');
-const userInputEl = document.getElementById('userInput');
-const submitBtnEl = document.getElementById('submitBtn');
-const expectedAnswerEl = document.getElementById('expectedAnswer');
-const feedbackEl = document.getElementById('feedback');
-const currentQuestionEl = document.getElementById('currentQuestion');
-const progressFillEl = document.getElementById('progressFill');
-const gameOverEl = document.getElementById('gameOver');
-const gameAreaEl = document.querySelector('.game-area');
-const startScreenEl = document.getElementById('startScreen');
-const startBtnEl = document.getElementById('startBtn');
-const resetBtnEl = document.getElementById('resetBtn');
-const rankingPreviewEl = document.getElementById('rankingPreview');
-const gameTimerEl = document.getElementById('gameTimer');
+// DOM要素は関数内で取得（初期化後に取得）
+let userConvertedEl, userInputEl, submitBtnEl, expectedAnswerEl, feedbackEl;
+let currentQuestionEl, progressFillEl, gameOverEl, gameAreaEl, startScreenEl;
+let startBtnEl, resetBtnEl, rankingPreviewEl, gameTimerEl;
 
-// いい感じ変換デモ関連の要素
-const tryConversionBtn = document.getElementById('tryConversionBtn');
-const conversionDemoEl = document.getElementById('conversionDemo');
-const closeDemoBtnEl = document.getElementById('closeDemoBtn');
-const backToGameBtnEl = document.getElementById('backToGameBtn');
-
-// セクション関連
-const sectionBtns = document.querySelectorAll('.section-btn');
-const demoSections = document.querySelectorAll('.demo-section');
-
-// 各セクションのテキストエリア
-const textareas = {
-    english: document.getElementById('englishTextarea'),
-    emoji: document.getElementById('emojiTextarea'),
-    business: document.getElementById('businessTextarea'),
-    casual: document.getElementById('casualTextarea'),
-    formal: document.getElementById('formalTextarea')
-};
-
+// いい感じ変換デモ関連の要素（後で初期化）
+let tryConversionBtn, conversionDemoEl, closeDemoBtnEl, backToGameBtnEl;
+let sectionBtns, demoSections, textareas;
 let currentSection = 'english';
-let currentTextarea = textareas.english;
+let currentTextarea;
 
-// プロンプトウィンドウ関連の要素
-const conversionPromptWindowEl = document.getElementById('conversionPromptWindow');
-const closePromptBtnEl = document.getElementById('closePromptBtn');
-const selectedTextDisplayEl = document.getElementById('selectedTextDisplay');
-const conversionPromptEl = document.getElementById('conversionPrompt');
-const conversionResultDisplayEl = document.getElementById('conversionResultDisplay');
-const executeConversionBtnEl = document.getElementById('executeConversionBtn');
-const applyConversionBtnEl = document.getElementById('applyConversionBtn');
-const cancelConversionBtnEl = document.getElementById('cancelConversionBtn');
-const promptExampleBtns = document.querySelectorAll('.prompt-example-btn');
+// プロンプトウィンドウ関連の要素（後で初期化）
+let conversionPromptWindowEl, closePromptBtnEl, selectedTextDisplayEl;
+let conversionPromptEl, conversionResultDisplayEl, executeConversionBtnEl;
+let applyConversionBtnEl, cancelConversionBtnEl, promptExampleBtns;
 
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -77,7 +45,7 @@ async function loadQuestionsFromJSON() {
         questions = data.questions.map(q => ({
             context: q.context,
             answer: q.hiragana,
-            fullDisplay: q.context + q.kanji
+            fullDisplay: q.kanji
         }));
         hiraganaToKanji = data.conversionRules;
         questionsLoaded = true;
@@ -96,6 +64,22 @@ async function initGame() {
 }
 
 async function startGame() {
+    console.log('startGame called');
+    console.log('questionsLoaded:', questionsLoaded);
+    console.log('questions length:', questions.length);
+    
+    // 問題データが読み込まれていない場合は読み込む
+    if (!questionsLoaded || questions.length === 0) {
+        console.log('Loading questions...');
+        await loadQuestionsFromJSON();
+    }
+    
+    if (questions.length === 0) {
+        console.error('No questions available');
+        alert('問題データの読み込みに失敗しました。');
+        return;
+    }
+    
     const selectedQuestions = questions.length > 10 
         ? shuffleArray(questions).slice(0, 10)
         : shuffleArray(questions);
@@ -106,6 +90,8 @@ async function startGame() {
     totalTime = 0;
     startTime = Date.now();
     gameStarted = true;
+    
+    console.log('Game starting with', gameQuestions.length, 'questions');
     
     // スコアコレクションをクリア
     document.getElementById('sushiCollection').innerHTML = '';
@@ -187,6 +173,9 @@ function loadQuestion() {
     
     userConvertedEl.innerHTML = '<span class="result-label">入力結果:</span> -';
     
+    // azooKeyの優位性を示すヒントを表示
+    showAzooKeyHint(currentQuestionIndex);
+    
     addSushiToConveyor();
     startQuestionTimer();
     
@@ -204,6 +193,45 @@ function loadQuestion() {
     progressFillEl.style.width = `${((currentQuestionIndex) / gameQuestions.length) * 100}%`;
     
     feedbackEl.classList.remove('show', 'correct', 'incorrect');
+}
+
+function showAzooKeyHint(questionIndex) {
+    const hints = [
+        "💡 文脈を理解して自動変換！確定ボタンは不要です",
+        "🚀 一気に最後まで入力すると精度が向上します",
+        "🧠 azooKeyは文章全体を見て最適な変換を選択",
+        "⚡ ライブ変換で思考を止めずに入力続行",
+        "🎯 長い文章ほどazooKeyの文脈理解が活躍",
+        "🔥 従来IMEでは困難な複雑変換もお任せ",
+        "💪 確定の手間なし、ストレスフリーな入力体験",
+        "✨ 文脈で同音異義語を正確に判別",
+        "🌟 最後まで入力してからEnterで一括変換",
+        "🎊 azooKeyの真髄、ライブ変換を体感中！"
+    ];
+    
+    const hintText = hints[questionIndex % hints.length];
+    
+    // ヒント表示エリアを探すか作成
+    let hintEl = document.getElementById('azookey-hint');
+    if (!hintEl) {
+        hintEl = document.createElement('div');
+        hintEl.id = 'azookey-hint';
+        hintEl.className = 'azookey-hint';
+        
+        // ゲームエリア内の適切な場所に追加
+        const questionAreaEl = document.querySelector('.question-area');
+        if (questionAreaEl) {
+            questionAreaEl.insertBefore(hintEl, questionAreaEl.firstChild);
+        }
+    }
+    
+    hintEl.textContent = hintText;
+    hintEl.classList.add('show');
+    
+    // 3秒後にフェードアウト
+    setTimeout(() => {
+        hintEl.classList.remove('show');
+    }, 3000);
 }
 
 
@@ -619,9 +647,31 @@ function displayResult(score, correct, time) {
                 </div>
 
                 <div class="conversion-tour-section">
-                    <h4>🤖 いい感じ変換を体験してみませんか？</h4>
-                    <div class="conversion-tour-links">
-                        <a href="good-feeling-conversion.html" class="tour-link">🤖 いい感じ変換デモ</a>
+                    <div class="tour-highlight">
+                        <h4>🎉 お疲れさまでした！次はもう一つの革新機能を体験しませんか？</h4>
+                        <div class="next-feature-preview">
+                            <div class="feature-preview-card">
+                                <div class="preview-header">
+                                    <h5>🤖 いい感じ変換</h5>
+                                    <p class="preview-subtitle">プロンプト1つで文章を自在に変換</p>
+                                </div>
+                                <div class="preview-example">
+                                    <div class="example-before">「今日は疲れた」を選択</div>
+                                    <div class="example-action">Ctrl+S → "English"</div>
+                                    <div class="example-after">「I'm tired today」</div>
+                                </div>
+                                <div class="preview-benefits">
+                                    <span class="benefit-tag">English変換</span>
+                                    <span class="benefit-tag">絵文字デコ</span>
+                                    <span class="benefit-tag">敬語変換</span>
+                                    <span class="benefit-tag">カジュアル化</span>
+                                </div>
+                                <a href="good-feeling-conversion.html" class="next-experience-btn">🚀 いい感じ変換を体験する</a>
+                            </div>
+                        </div>
+                        <div class="completion-message">
+                            <p>✨ 文脈変換とプロンプト変換、両方体験してazooKeyの全貌を知ろう！</p>
+                        </div>
                     </div>
                 </div>
 
@@ -736,35 +786,13 @@ function displayRankings() {
 }
 
 
-userInputEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        checkAnswer();
-    }
-});
-
-userInputEl.addEventListener('input', (e) => {
-    const text = e.target.value;
-    
-    if (!gameStarted || currentQuestionIndex >= gameQuestions.length) return;
-    
-    const question = gameQuestions[currentQuestionIndex];
-    
-    // 入力中のリアルタイム表示（入力方法に関係なく結果を表示）
-    const userAnswer = text.replace(question.context, '').trim();
-    if (userAnswer) {
-        updateComparisonDisplay(text, question.fullDisplay);
-    } else {
-        userConvertedEl.innerHTML = '-';
-        expectedAnswerEl.textContent = question.fullDisplay;
-    }
-});
-
 function displayRankingPreview() {
     const rankings = getRankings();
     
     if (rankings.length === 0) {
-        rankingPreviewEl.innerHTML = '';
+        if (rankingPreviewEl) {
+            rankingPreviewEl.innerHTML = '';
+        }
         return;
     }
     
@@ -786,86 +814,240 @@ function displayRankingPreview() {
     });
     html += '</ol>';
     
-    rankingPreviewEl.innerHTML = html;
+    if (rankingPreviewEl) {
+        rankingPreviewEl.innerHTML = html;
+    }
 }
 
-startBtnEl.addEventListener('click', startGame);
-resetBtnEl.addEventListener('click', resetGame);
-
-// いい感じ変換デモのイベントリスナー
-tryConversionBtn.addEventListener('click', showConversionDemo);
-closeDemoBtnEl.addEventListener('click', hideConversionDemo);
-backToGameBtnEl.addEventListener('click', hideConversionDemo);
-
-// プロンプトウィンドウのイベントリスナー
-closePromptBtnEl.addEventListener('click', hidePromptWindow);
-cancelConversionBtnEl.addEventListener('click', hidePromptWindow);
-
-// セクション切り替えボタンのイベントリスナー
-sectionBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const section = btn.getAttribute('data-section');
-        showSection(section);
-        currentTextarea.focus();
-    });
-});
-
-// 各テキストエリアにイベントリスナーを追加
-Object.values(textareas).forEach(textarea => {
-    // 選択状態を監視
-    textarea.addEventListener('select', () => {
-        updateSelectionDisplayForTextarea(textarea);
-    });
+// ツアー機能
+function startTypingDemo() {
+    // azookeyショーケースを非表示にしてゲーム画面に移行
+    const showcaseEl = document.getElementById('azookeyShowcase');
+    const startScreenEl = document.getElementById('startScreen');
     
-    textarea.addEventListener('mouseup', () => {
-        updateSelectionDisplayForTextarea(textarea);
-    });
-    
-    textarea.addEventListener('keyup', () => {
-        updateSelectionDisplayForTextarea(textarea);
-    });
-    
-    // Ctrl+S でプロンプトウィンドウを開く
-    textarea.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 's') {
-            e.preventDefault(); // ブラウザの保存ダイアログを防ぐ
-            e.stopPropagation();
-            // フォーカスが当たっているテキストエリアを現在のものとして設定
-            currentTextarea = textarea;
-            currentSelectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-            showPromptWindow();
-        }
-    });
-    
-    // 変換ボタンにイベントリスナーを追加
-    const convertBtn = textarea.parentElement.querySelector('.convert-btn');
-    convertBtn.addEventListener('click', () => {
-        currentTextarea = textarea;
-        currentSelectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-        showPromptWindow();
-    });
-});
-
-// プロンプト例ボタンのイベントリスナー
-promptExampleBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const prompt = btn.getAttribute('data-prompt');
-        conversionPromptEl.value = prompt;
-    });
-});
-
-// デモ画面の背景クリックで閉じる
-conversionDemoEl.addEventListener('click', (e) => {
-    if (e.target === conversionDemoEl) {
-        hideConversionDemo();
+    if (showcaseEl) {
+        showcaseEl.style.display = 'none';
     }
-});
+    startScreenEl.style.display = 'block';
+    
+    // スムーズスクロール
+    startScreenEl.scrollIntoView({ behavior: 'smooth' });
+}
 
-// プロンプトウィンドウの背景クリックで閉じる
-conversionPromptWindowEl.addEventListener('click', (e) => {
-    if (e.target === conversionPromptWindowEl) {
-        hidePromptWindow();
+// ページ読み込み時にショーケースを表示、ゲーム画面を非表示
+function initializePage() {
+    const showcaseEl = document.getElementById('azookeyShowcase');
+    const startScreenEl = document.getElementById('startScreen');
+    
+    if (showcaseEl) {
+        showcaseEl.style.display = 'block';
     }
-});
+    if (startScreenEl) {
+        startScreenEl.style.display = 'none';
+    }
+}
 
-initGame();
+// DOM要素を初期化する関数
+function initializeElements() {
+    // 基本的なゲーム要素
+    userConvertedEl = document.getElementById('userConverted');
+    userInputEl = document.getElementById('userInput');
+    submitBtnEl = document.getElementById('submitBtn');
+    expectedAnswerEl = document.getElementById('expectedAnswer');
+    feedbackEl = document.getElementById('feedback');
+    currentQuestionEl = document.getElementById('currentQuestion');
+    progressFillEl = document.getElementById('progressFill');
+    gameOverEl = document.getElementById('gameOver');
+    gameAreaEl = document.querySelector('.game-area');
+    startScreenEl = document.getElementById('startScreen');
+    startBtnEl = document.getElementById('startBtn');
+    resetBtnEl = document.getElementById('resetBtn');
+    rankingPreviewEl = document.getElementById('rankingPreview');
+    gameTimerEl = document.getElementById('gameTimer');
+
+    // いい感じ変換デモ関連の要素
+    tryConversionBtn = document.getElementById('tryConversionBtn');
+    conversionDemoEl = document.getElementById('conversionDemo');
+    closeDemoBtnEl = document.getElementById('closeDemoBtn');
+    backToGameBtnEl = document.getElementById('backToGameBtn');
+    sectionBtns = document.querySelectorAll('.section-btn');
+    demoSections = document.querySelectorAll('.demo-section');
+    
+    textareas = {
+        english: document.getElementById('englishTextarea'),
+        emoji: document.getElementById('emojiTextarea'),
+        business: document.getElementById('businessTextarea'),
+        casual: document.getElementById('casualTextarea'),
+        formal: document.getElementById('formalTextarea')
+    };
+    
+    if (textareas.english) {
+        currentTextarea = textareas.english;
+    }
+
+    // プロンプトウィンドウ関連の要素
+    conversionPromptWindowEl = document.getElementById('conversionPromptWindow');
+    closePromptBtnEl = document.getElementById('closePromptBtn');
+    selectedTextDisplayEl = document.getElementById('selectedTextDisplay');
+    conversionPromptEl = document.getElementById('conversionPrompt');
+    conversionResultDisplayEl = document.getElementById('conversionResultDisplay');
+    executeConversionBtnEl = document.getElementById('executeConversionBtn');
+    applyConversionBtnEl = document.getElementById('applyConversionBtn');
+    cancelConversionBtnEl = document.getElementById('cancelConversionBtn');
+    promptExampleBtns = document.querySelectorAll('.prompt-example-btn');
+    
+    // イベントリスナーを設定
+    setupEventListeners();
+}
+
+// イベントリスナーを設定する関数
+function setupEventListeners() {
+    // 基本的なゲームイベント
+    if (userInputEl) {
+        userInputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkAnswer();
+            }
+        });
+
+        userInputEl.addEventListener('input', (e) => {
+            const text = e.target.value;
+            
+            if (!gameStarted || currentQuestionIndex >= gameQuestions.length) return;
+            
+            const question = gameQuestions[currentQuestionIndex];
+            
+            // 入力中のリアルタイム表示（入力方法に関係なく結果を表示）
+            const userAnswer = text.replace(question.context, '').trim();
+            if (userAnswer) {
+                updateComparisonDisplay(text, question.fullDisplay);
+            } else {
+                userConvertedEl.innerHTML = '-';
+                expectedAnswerEl.textContent = question.fullDisplay;
+            }
+        });
+    }
+    
+    if (startBtnEl) {
+        startBtnEl.addEventListener('click', startGame);
+    }
+    
+    if (resetBtnEl) {
+        resetBtnEl.addEventListener('click', resetGame);
+    }
+
+    // いい感じ変換デモのイベントリスナー
+    if (tryConversionBtn) {
+        tryConversionBtn.addEventListener('click', showConversionDemo);
+    }
+    if (closeDemoBtnEl) {
+        closeDemoBtnEl.addEventListener('click', hideConversionDemo);
+    }
+    if (backToGameBtnEl) {
+        backToGameBtnEl.addEventListener('click', hideConversionDemo);
+    }
+
+    // プロンプトウィンドウのイベントリスナー
+    if (closePromptBtnEl) {
+        closePromptBtnEl.addEventListener('click', hidePromptWindow);
+    }
+    if (cancelConversionBtnEl) {
+        cancelConversionBtnEl.addEventListener('click', hidePromptWindow);
+    }
+
+    // セクション切り替えボタンのイベントリスナー
+    if (sectionBtns) {
+        sectionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const section = btn.getAttribute('data-section');
+                showSection(section);
+                if (currentTextarea) {
+                    currentTextarea.focus();
+                }
+            });
+        });
+    }
+
+    // 各テキストエリアにイベントリスナーを追加
+    if (textareas) {
+        Object.values(textareas).forEach(textarea => {
+            if (!textarea) return;
+            
+            // 選択状態を監視
+            textarea.addEventListener('select', () => {
+                updateSelectionDisplayForTextarea(textarea);
+            });
+            
+            textarea.addEventListener('mouseup', () => {
+                updateSelectionDisplayForTextarea(textarea);
+            });
+            
+            textarea.addEventListener('keyup', () => {
+                updateSelectionDisplayForTextarea(textarea);
+            });
+            
+            // Ctrl+S でプロンプトウィンドウを開く
+            textarea.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault(); // ブラウザの保存ダイアログを防ぐ
+                    e.stopPropagation();
+                    // フォーカスが当たっているテキストエリアを現在のものとして設定
+                    currentTextarea = textarea;
+                    currentSelectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+                    showPromptWindow();
+                }
+            });
+            
+            // 変換ボタンにイベントリスナーを追加
+            const convertBtn = textarea.parentElement.querySelector('.convert-btn');
+            if (convertBtn) {
+                convertBtn.addEventListener('click', () => {
+                    currentTextarea = textarea;
+                    currentSelectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+                    showPromptWindow();
+                });
+            }
+        });
+    }
+
+    // プロンプト例ボタンのイベントリスナー
+    if (promptExampleBtns) {
+        promptExampleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const prompt = btn.getAttribute('data-prompt');
+                if (conversionPromptEl) {
+                    conversionPromptEl.value = prompt;
+                }
+            });
+        });
+    }
+
+    // デモ画面の背景クリックで閉じる
+    if (conversionDemoEl) {
+        conversionDemoEl.addEventListener('click', (e) => {
+            if (e.target === conversionDemoEl) {
+                hideConversionDemo();
+            }
+        });
+    }
+
+    // プロンプトウィンドウの背景クリックで閉じる
+    if (conversionPromptWindowEl) {
+        conversionPromptWindowEl.addEventListener('click', (e) => {
+            if (e.target === conversionPromptWindowEl) {
+                hidePromptWindow();
+            }
+        });
+    }
+}
+
+// DOM読み込み後に初期化
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM要素を初期化
+    initializeElements();
+    
+    // ページ初期化
+    initializePage();
+    initGame();
+});
