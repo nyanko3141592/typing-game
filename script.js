@@ -10,6 +10,8 @@ let questionStartTime = 0;
 let gameStarted = false;
 let timerInterval = null;
 let isProcessing = false;
+let questionTimer = null;
+let correctCount = 0;
 
 const userConvertedEl = document.getElementById('userConverted');
 const userInputEl = document.getElementById('userInput');
@@ -19,7 +21,6 @@ const feedbackEl = document.getElementById('feedback');
 const currentQuestionEl = document.getElementById('currentQuestion');
 const progressFillEl = document.getElementById('progressFill');
 const gameOverEl = document.getElementById('gameOver');
-const restartBtnEl = document.getElementById('restartBtn');
 const gameAreaEl = document.querySelector('.game-area');
 const startScreenEl = document.getElementById('startScreen');
 const startBtnEl = document.getElementById('startBtn');
@@ -68,9 +69,19 @@ async function startGame() {
     
     gameQuestions = selectedQuestions;
     currentQuestionIndex = 0;
+    correctCount = 0;
     totalTime = 0;
     startTime = Date.now();
     gameStarted = true;
+    
+    // 寿司コレクションをクリア
+    document.getElementById('sushiCollection').innerHTML = '';
+    
+    // 寿司カウントをリセット
+    const sushiCountEl = document.getElementById('sushiCount');
+    if (sushiCountEl) {
+        sushiCountEl.textContent = '0';
+    }
     
     startScreenEl.style.display = 'none';
     gameAreaEl.style.display = 'block';
@@ -101,6 +112,22 @@ function stopTimer() {
 function resetGame() {
     gameStarted = false;
     stopTimer();
+    if (questionTimer) {
+        clearInterval(questionTimer);
+    }
+    // 収集した寿司をクリア
+    document.getElementById('sushiCollection').innerHTML = '';
+    
+    // 寿司カウントをリセット
+    const sushiCountEl = document.getElementById('sushiCount');
+    if (sushiCountEl) {
+        sushiCountEl.textContent = '0';
+    }
+    
+    // 変数もリセット
+    correctCount = 0;
+    currentQuestionIndex = 0;
+    
     startScreenEl.style.display = 'block';
     gameAreaEl.style.display = 'none';
     gameOverEl.classList.remove('show');
@@ -113,28 +140,100 @@ function loadQuestion() {
         return;
     }
 
-    isProcessing = false; // 新しい問題読み込み時にフラグをリセット
+    isProcessing = false;
     
     const question = gameQuestions[currentQuestionIndex];
     userInputEl.value = question.context;
-    expectedAnswerEl.innerHTML = `<span class="label">期待される結果:</span> ${question.fullDisplay}`;
-    userConvertedEl.innerHTML = '-';
+    expectedAnswerEl.textContent = question.fullDisplay;
+    
+    // フリガナを表示
+    const targetReadingEl = document.getElementById('targetReading');
+    if (targetReadingEl) {
+        targetReadingEl.textContent = question.answer;
+    }
+    
+    userConvertedEl.innerHTML = '<span class="result-label">入力結果:</span> -';
+    
+    addSushiToConveyor();
+    startQuestionTimer();
     
     questionStartTime = Date.now();
     
-    // IMEの文脈読み直しのため、一度フォーカスを外してから再設定
     userInputEl.blur();
     
     setTimeout(() => {
         const cursorPosition = question.context.length;
         userInputEl.setSelectionRange(cursorPosition, cursorPosition);
         userInputEl.focus();
-    }, 50); // 50ms後にフォーカスを当てる
+    }, 50);
     
-    currentQuestionEl.textContent = currentQuestionIndex + 1;
-    progressFillEl.style.width = `${((currentQuestionIndex + 1) / gameQuestions.length) * 100}%`;
+    currentQuestionEl.textContent = currentQuestionIndex;
+    progressFillEl.style.width = `${((currentQuestionIndex) / gameQuestions.length) * 100}%`;
     
     feedbackEl.classList.remove('show', 'correct', 'incorrect');
+}
+
+
+function addSushiToConveyor() {
+    const sushiItemEl = document.getElementById('sushiItem');
+    const sushiTypes = ['🍣', '🍤', '🐟', '🐠', '🐡', '🦐', '🦑', '🐙'];
+    
+    const sushiPlate = document.createElement('div');
+    sushiPlate.className = 'sushi-plate';
+    
+    const sushi = document.createElement('div');
+    sushi.className = 'sushi';
+    sushi.textContent = sushiTypes[Math.floor(Math.random() * sushiTypes.length)];
+    
+    const plate = document.createElement('div');
+    plate.className = 'plate';
+    
+    sushiPlate.appendChild(sushi);
+    sushiPlate.appendChild(plate);
+    
+    sushiItemEl.innerHTML = '';
+    sushiItemEl.appendChild(sushiPlate);
+    
+    // アニメーションをリセット
+    sushiItemEl.style.animation = 'none';
+    setTimeout(() => {
+        sushiItemEl.style.animation = 'sushi-flow 8s linear';
+    }, 10);
+}
+
+function startQuestionTimer() {
+    if (questionTimer) {
+        clearInterval(questionTimer);
+    }
+    
+    let elapsed = 0;
+    
+    questionTimer = setInterval(() => {
+        elapsed += 100;
+        
+        if (elapsed >= 8000) {
+            clearInterval(questionTimer);
+            if (!isProcessing) {
+                skipQuestion();
+            }
+        }
+    }, 100);
+}
+
+function skipQuestion() {
+    console.log('skipQuestion呼び出し, isProcessing:', isProcessing);
+    if (isProcessing) return;
+    isProcessing = true;
+    
+    console.log('時間切れ処理開始');
+    showFeedback('😢 時間切れです...', 'incorrect');
+    
+    setTimeout(() => {
+        console.log('時間切れ後次の問題へ');
+        currentQuestionIndex++;
+        loadQuestion();
+        isProcessing = false;
+    }, 1000);
 }
 
 function convertToKanji(hiragana, context) {
@@ -152,27 +251,60 @@ function checkAnswer() {
     const fullText = userInputEl.value;
     const question = gameQuestions[currentQuestionIndex];
     
-    // 比較表示を更新
+    console.log('入力:', fullText);
+    console.log('期待:', question.fullDisplay);
+    
     updateComparisonDisplay(fullText, question.fullDisplay);
     
-    // 空白を無視して比較
     const normalizedInput = fullText.replace(/\s+/g, '');
     const normalizedExpected = question.fullDisplay.replace(/\s+/g, '');
     
-    // 最終的な結果が正しければ入力方法に関係なく正解
+    console.log('正規化入力:', normalizedInput);
+    console.log('正規化期待:', normalizedExpected);
+    
     const isCorrect = normalizedInput === normalizedExpected;
     
+    console.log('正解判定:', isCorrect);
+    
     if (isCorrect) {
-        showFeedback('正解！次の問題に進みます', 'correct');
+        console.log('正解処理開始');
+        correctCount++;
+        clearInterval(questionTimer);
+        showFeedback('🍣 ごちそうさま！', 'correct');
+        collectSushi();
         setTimeout(() => {
+            console.log('次の問題へ移行');
             currentQuestionIndex++;
             loadQuestion();
             isProcessing = false;
         }, 1000);
     } else {
-        // 間違いの場合は何も表示せず、入力を保持
         userInputEl.focus();
         isProcessing = false;
+    }
+}
+
+function collectSushi() {
+    const sushiItemEl = document.getElementById('sushiItem');
+    const sushiCollection = document.getElementById('sushiCollection');
+    const sushiCountEl = document.getElementById('sushiCount');
+    const sushiPlate = sushiItemEl.querySelector('.sushi-plate');
+    
+    if (sushiPlate) {
+        const sushiEmoji = sushiPlate.querySelector('.sushi').textContent;
+        const collectedPlate = document.createElement('div');
+        collectedPlate.className = 'collected-plate';
+        collectedPlate.textContent = sushiEmoji;
+        collectedPlate.style.animationDelay = '0s';
+        sushiCollection.appendChild(collectedPlate);
+        
+        // 寿司カウントを更新
+        if (sushiCountEl) {
+            sushiCountEl.textContent = correctCount;
+        }
+        
+        sushiItemEl.style.animation = 'none';
+        sushiItemEl.innerHTML = '';
     }
 }
 
@@ -199,8 +331,7 @@ function updateComparisonDisplay(userConverted, expected) {
         }
     }
     
-    // 期待される結果の表示
-    let expectedHTML = '<span class="label">期待される結果:</span> ';
+    let expectedHTML = '';
     if (matchLength > 0) {
         expectedHTML += `<span class="match">${expected.substring(0, matchLength)}</span>`;
     }
@@ -208,8 +339,7 @@ function updateComparisonDisplay(userConverted, expected) {
         expectedHTML += `<span class="no-match">${expected.substring(matchLength)}</span>`;
     }
     
-    // あなたの変換結果の表示
-    let convertedHTML = '<span class="label">あなたの変換結果:</span> ';
+    let convertedHTML = '<span class="result-label">入力結果:</span> ';
     if (matchLength > 0) {
         convertedHTML += `<span class="match">${userConverted.substring(0, matchLength)}</span>`;
     }
@@ -227,40 +357,44 @@ function showFeedback(message, type) {
 }
 
 function endGame() {
-    totalTime = Date.now() - startTime;
     gameStarted = false;
     stopTimer();
-    gameAreaEl.style.display = 'none';
-    gameOverEl.classList.add('show');
+    if (questionTimer) {
+        clearInterval(questionTimer);
+    }
+    totalTime = (Date.now() - startTime) / 1000;
     
-    // 自動でランキングに登録
-    autoSaveRanking();
-    showRankingDisplay();
+    document.activeElement.blur();
+    
+    const finalScore = Math.max(0, 100 - totalTime + correctCount * 10);
+    saveRanking(finalScore, correctCount, totalTime);
+    displayResult(finalScore, correctCount, totalTime);
 }
 
-function autoSaveRanking() {
-    const timeInSeconds = (totalTime / 1000).toFixed(2);
-    const defaultName = '無名' + Math.floor(Math.random() * 1000);
-    
+function saveRanking(score, correct, time) {
     const rankings = getRankings();
     const now = new Date();
     const newEntry = {
-        id: Date.now() + Math.random(), // 一意なID
-        name: defaultName,
-        time: parseFloat(timeInSeconds),
+        id: Date.now() + Math.random(),
+        name: '無名' + Math.floor(Math.random() * 1000),
+        score: score.toFixed(2),
+        correct: correct,
+        time: time.toFixed(2),
         date: now.toLocaleDateString('ja-JP', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+            minute: '2-digit'
         })
     };
     
     rankings.push(newEntry);
-    rankings.sort((a, b) => a.time - b.time);
+    rankings.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
     rankings.splice(10);
+    
+    // 今日食べた寿司数を更新
+    updateDailySushiCount(correct);
     
     try {
         localStorage.setItem('typingGameRankings', JSON.stringify(rankings));
@@ -270,37 +404,119 @@ function autoSaveRanking() {
     }
 }
 
-function showRankingDisplay() {
-    const timeInSeconds = (totalTime / 1000).toFixed(2);
+function updateDailySushiCount(count) {
+    const today = new Date().toDateString();
+    const dailyDataKey = 'typingGameDailyData';
+    let dailyData = JSON.parse(localStorage.getItem(dailyDataKey) || '{}');
+    
+    if (!dailyData[today]) {
+        dailyData[today] = { totalSushi: 0 };
+    }
+    
+    dailyData[today].totalSushi += count;
+    
+    try {
+        localStorage.setItem(dailyDataKey, JSON.stringify(dailyData));
+    } catch (error) {
+        console.error('日次データの保存に失敗しました:', error);
+    }
+}
+
+function getDailySushiCount() {
+    const today = new Date().toDateString();
+    const dailyData = JSON.parse(localStorage.getItem('typingGameDailyData') || '{}');
+    return dailyData[today]?.totalSushi || 0;
+}
+
+function displayResult(score, correct, time) {
+    gameAreaEl.style.display = 'none';
+    gameOverEl.classList.add('show');
+    
     const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
+    const dailySushiCount = getDailySushiCount();
     
     const rankingDisplayHTML = `
-        <div class="ranking-display">
-            <h3>ゲーム完了！</h3>
-            <p class="time-display">完了タイム: ${timeInSeconds}秒</p>
-            <div class="name-edit">
-                <label>名前: </label>
-                <input type="text" id="playerName" value="${lastEntry.name || ''}" maxlength="20">
-                <button id="updateNameBtn" class="update-name-btn">名前更新</button>
+        <div class="result-container">
+            <div class="result-header">
+                <div class="completion-badge">
+                    <div class="badge-icon">🎉</div>
+                    <h2 class="completion-title">お疲れさまでした！</h2>
+                    <p class="completion-subtitle">azooKey on macOSの体験はいかがでしたか？</p>
+                </div>
+            </div>
+            
+            <div class="result-content">
+                <div class="score-section">
+                    <div class="main-score-card">
+                        <div class="score-header">
+                            <h3>あなたのスコア</h3>
+                        </div>
+                        <div class="score-display">
+                            <div class="score-value">${score.toFixed(2)}</div>
+                            <div class="score-unit">点</div>
+                        </div>
+                        <div class="score-breakdown">
+                            <div class="breakdown-item">
+                                <span class="breakdown-icon">🍣</span>
+                                <span class="breakdown-label">取得した寿司</span>
+                                <span class="breakdown-value">${correct}貫</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-icon">⏱️</span>
+                                <span class="breakdown-label">クリア時間</span>
+                                <span class="breakdown-value">${time.toFixed(2)}秒</span>
+                            </div>
+                        </div>
+                        <div class="score-formula">
+                            <p>スコア計算式: 100 - タイム + (取得数 × 10)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <div class="daily-stats">
+                        <h4>📅 本日の累計</h4>
+                        <div class="daily-count">${dailySushiCount}貫の寿司を獲得</div>
+                    </div>
+                </div>
+
+                <div class="name-registration">
+                    <h4>ランキングに登録</h4>
+                    <div class="name-input-group">
+                        <input type="text" id="playerName" value="${lastEntry.name || ''}" placeholder="お名前を入力してください" maxlength="20">
+                        <button id="updateNameBtn" class="register-btn">登録</button>
+                    </div>
+                </div>
+
+                <div class="actions-section">
+                    <button id="restartBtn" class="action-btn primary">もう一度プレイ</button>
+                    <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="action-btn secondary">
+                        azooKey on macOSについて詳しく
+                    </a>
+                </div>
+            </div>
+            
+            <div class="ranking-section">
+                <div class="ranking-list" id="rankingList"></div>
             </div>
         </div>
-        <div class="ranking-list" id="rankingList"></div>
     `;
     
-    const existingDisplay = document.querySelector('.ranking-display');
-    const existingRankingList = document.querySelector('.ranking-list');
-    if (existingDisplay) existingDisplay.remove();
-    if (existingRankingList) existingRankingList.remove();
+    // 既存の要素をクリア
+    gameOverEl.innerHTML = '';
     
     gameOverEl.insertAdjacentHTML('beforeend', rankingDisplayHTML);
     
+    // イベントリスナーを追加
     const updateBtn = document.getElementById('updateNameBtn');
     const nameInput = document.getElementById('playerName');
+    const restartBtn = document.getElementById('restartBtn');
     
     updateBtn.addEventListener('click', () => updatePlayerName());
     nameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') updatePlayerName();
     });
+    restartBtn.addEventListener('click', resetGame);
     
     displayRankings();
 }
@@ -369,8 +585,9 @@ function displayRankings() {
                 <div class="entry-details">
                     <div class="name-time">
                         <span class="name">${entry.name}</span>
-                        <span class="time">${entry.time}秒</span>
+                        <span class="score">スコア: ${entry.score}点</span>
                     </div>
+                    <div class="stats">🍣${entry.correct}貫 | ⏱${entry.time}秒</div>
                     <div class="date">${entry.date}</div>
                 </div>
             </li>
@@ -402,7 +619,7 @@ userInputEl.addEventListener('input', (e) => {
         updateComparisonDisplay(text, question.fullDisplay);
     } else {
         userConvertedEl.innerHTML = '-';
-        expectedAnswerEl.innerHTML = `<span class="label">期待される結果:</span> ${question.fullDisplay}`;
+        expectedAnswerEl.textContent = question.fullDisplay;
     }
 });
 
@@ -422,8 +639,9 @@ function displayRankingPreview() {
                 <div class="entry-details">
                     <div class="name-time">
                         <span class="name">${entry.name}</span>
-                        <span class="time">${entry.time}秒</span>
+                        <span class="score">スコア: ${entry.score}点</span>
                     </div>
+                    <div class="stats">🍣${entry.correct}貫 | ⏱${entry.time}秒</div>
                     <div class="date">${entry.date}</div>
                 </div>
             </li>
@@ -436,6 +654,5 @@ function displayRankingPreview() {
 
 startBtnEl.addEventListener('click', startGame);
 resetBtnEl.addEventListener('click', resetGame);
-restartBtnEl.addEventListener('click', resetGame);
 
 initGame();

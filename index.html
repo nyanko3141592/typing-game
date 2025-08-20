@@ -9,55 +9,144 @@
 <body>
     <div class="container">
         <header>
-            <h1>Context-Conditioned Composing Contest</h1>
+            <h1>🍣 寿司打 IME Edition 🍣</h1>
             <p class="subtitle">文脈を読んで変換する日本語IME向けタイピングゲーム</p>
         </header>
 
         <div class="start-screen" id="startScreen">
             <div class="start-content">
-                <h2>ゲーム説明</h2>
-                <ul class="instructions-list">
-                    <li>テキストフィールドに表示される文脈の続きを入力します</li>
-                    <li>最終的な文字列が正解と一致すれば正解となります</li>
-                    <li>Enterキーで回答を確定し、正解なら次の問題に進みます</li>
-                    <li>全問題完了までの時間を競います</li>
-                </ul>
+                <h2>🎮 azooKey on macOS 体験ゲーム</h2>
+                <div class="ime-features">
+                    <h3>✨ azooKey on macOSの特徴</h3>
+                    <p class="feature-description">
+                        azooKey on macOSは<strong>文脈を理解する賢いIME</strong>です！
+                    </p>
+                    <ul class="feature-list">
+                        <li>📖 前後の文脈を読んで適切な漢字に変換</li>
+                        <li>⚡ ライブ変換で確定せずに一気に入力可能</li>
+                        <li>🧠 文章全体を理解して正確な変換を実現</li>
+                    </ul>
+                </div>
+                <div class="game-instructions">
+                    <h3>🍣 ゲームの遊び方</h3>
+                    <p class="game-description">
+                        <strong>文章を一気に最後まで入力してください！</strong><br>
+                        途中で確定せず、最後にEnterキーを押すだけでOK
+                    </p>
+                    <div class="example-box">
+                        <p class="example-title">例：同じ音でも前の文脈で変換が変わる！</p>
+                        <div class="example-grid">
+                            <div class="example-category">
+                                <p class="category-title">「かう」の変換</p>
+                                <div class="example-item">
+                                    <span class="example-input">ねこをかう</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">猫を飼う</span>
+                                </div>
+                                <div class="example-item">
+                                    <span class="example-input">りんごをかう</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">リンゴを買う</span>
+                                </div>
+                            </div>
+                            <div class="example-category">
+                                <p class="category-title">「のります」の変換</p>
+                                <div class="example-item">
+                                    <span class="example-input">雑誌に→のります</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">載ります</span>
+                                </div>
+                                <div class="example-item">
+                                    <span class="example-input">車に→のります</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">乗ります</span>
+                                </div>
+                            </div>
+                            <div class="example-category">
+                                <p class="category-title">「かみとかしてます」の変換</p>
+                                <div class="example-item">
+                                    <span class="example-input">悟りを開きました→かみとかしてます</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">神と化してます</span>
+                                </div>
+                                <div class="example-item">
+                                    <span class="example-input">風呂上がりです→かみとかしてます</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">髪とかしてます</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="instructions-list">
+                        <li>ひらがなで表示される文章を入力</li>
+                        <li>一気に最後まで入力（途中確定不要）</li>
+                        <li>Enterキーで確定→正解なら次の問題へ</li>
+                        <li>全10問の完了時間を競おう！</li>
+                    </ul>
+                </div>
                 <button id="startBtn" class="start-btn">ゲームスタート</button>
+                <div class="ime-link">
+                    <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="ime-article-link">
+                        📚 azooKey on macOSについて詳しく見る
+                    </a>
+                </div>
                 <div class="ranking-preview" id="rankingPreview"></div>
             </div>
         </div>
 
         <div class="game-area" style="display: none;">
-            <div class="status-bar">
-                <div class="progress">
+            <div class="sushi-header">
+                <div class="time-counter">
+                    <span class="time-label">経過時間</span>
+                    <span class="time-value" id="gameTimer">0.0</span>
+                    <span class="time-unit">秒</span>
+                </div>
+                <div class="status-controls">
                     <span class="question-counter">問題: <span id="currentQuestion">1</span> / 10</span>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
+                    <span class="sushi-counter">寿司: <span id="sushiCount">0</span>個</span>
+                    <button id="resetBtn" class="reset-btn">リセット</button>
+                </div>
+            </div>
+
+            <div class="sushi-restaurant">
+                <div class="sushi-counter-top">
+                    <div class="sushi-belt">
+                        <div class="belt-track">
+                            <div class="sushi-item" id="sushiItem"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="timer-display">
-                    <span class="timer-label">経過時間:</span>
-                    <span id="gameTimer">0.0秒</span>
+                <div class="counter-surface">
+                    <div class="table-items">
+                        <div class="left-items">
+                            <div class="tea-cup">🍵</div>
+                            <div class="chopsticks">🥢</div>
+                            <div class="empty-plate"></div>
+                        </div>
+                        <div class="collected-sushi">
+                            <div class="sushi-collection" id="sushiCollection"></div>
+                        </div>
+                    </div>
                 </div>
-                <button id="resetBtn" class="reset-btn">リセット</button>
             </div>
 
             <div class="question-area">
-                <div class="instruction">
-                    <p>テキストフィールドの続きを入力してください（最終的な結果が正解と一致すれば正解）</p>
-                    <p class="hint">Enterキーで回答を確定します</p>
-                </div>
-                <div class="input-area">
-                    <textarea id="userInput" rows="3" placeholder="例: 雑誌にのります（Enterキーで確定）" autocomplete="off" spellcheck="false"></textarea>
-                </div>
-                <div class="expected-display">
-                    <div class="expected-answer">
-                        <span class="label">期待される結果:</span>
-                        <span id="expectedAnswer">雑誌に載ります</span>
+                <div class="question-card">
+                    <div class="target-text">
+                        <div class="target-label">🍣 お題の寿司ネタ 🍣</div>
+                        <div class="target-content">
+                            <ruby class="target-ruby">
+                                <span id="expectedAnswer">雑誌に載ります</span>
+                                <rt id="targetReading">ざっしにのります</rt>
+                            </ruby>
+                        </div>
                     </div>
-                    <div class="converted-result" id="convertedResult">
-                        <span class="label">あなたの変換結果:</span>
-                        <span id="userConverted">-</span>
+                    <div class="input-section">
+                        <textarea id="userInput" rows="2" placeholder="ここに入力してEnterで確定" autocomplete="off" spellcheck="false"></textarea>
+                        <div class="input-result">
+                            <span class="result-label">入力結果:</span>
+                            <span id="userConverted">-</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -66,8 +155,7 @@
         </div>
 
         <div class="game-over" id="gameOver">
-            <h2>ゲーム終了！</h2>
-            <button id="restartBtn" class="restart-btn">もう一度プレイ</button>
+            <!-- 結果はJavaScriptで動的に生成 -->
         </div>
     </div>
 
