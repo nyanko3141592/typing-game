@@ -28,6 +28,39 @@ const resetBtnEl = document.getElementById('resetBtn');
 const rankingPreviewEl = document.getElementById('rankingPreview');
 const gameTimerEl = document.getElementById('gameTimer');
 
+// いい感じ変換デモ関連の要素
+const tryConversionBtn = document.getElementById('tryConversionBtn');
+const conversionDemoEl = document.getElementById('conversionDemo');
+const closeDemoBtnEl = document.getElementById('closeDemoBtn');
+const backToGameBtnEl = document.getElementById('backToGameBtn');
+
+// セクション関連
+const sectionBtns = document.querySelectorAll('.section-btn');
+const demoSections = document.querySelectorAll('.demo-section');
+
+// 各セクションのテキストエリア
+const textareas = {
+    english: document.getElementById('englishTextarea'),
+    emoji: document.getElementById('emojiTextarea'),
+    business: document.getElementById('businessTextarea'),
+    casual: document.getElementById('casualTextarea'),
+    formal: document.getElementById('formalTextarea')
+};
+
+let currentSection = 'english';
+let currentTextarea = textareas.english;
+
+// プロンプトウィンドウ関連の要素
+const conversionPromptWindowEl = document.getElementById('conversionPromptWindow');
+const closePromptBtnEl = document.getElementById('closePromptBtn');
+const selectedTextDisplayEl = document.getElementById('selectedTextDisplay');
+const conversionPromptEl = document.getElementById('conversionPrompt');
+const conversionResultDisplayEl = document.getElementById('conversionResultDisplay');
+const executeConversionBtnEl = document.getElementById('executeConversionBtn');
+const applyConversionBtnEl = document.getElementById('applyConversionBtn');
+const cancelConversionBtnEl = document.getElementById('cancelConversionBtn');
+const promptExampleBtns = document.querySelectorAll('.prompt-example-btn');
+
 function shuffleArray(array) {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -74,10 +107,10 @@ async function startGame() {
     startTime = Date.now();
     gameStarted = true;
     
-    // 寿司コレクションをクリア
+    // スコアコレクションをクリア
     document.getElementById('sushiCollection').innerHTML = '';
     
-    // 寿司カウントをリセット
+    // スコアカウントをリセット
     const sushiCountEl = document.getElementById('sushiCount');
     if (sushiCountEl) {
         sushiCountEl.textContent = '0';
@@ -115,10 +148,10 @@ function resetGame() {
     if (questionTimer) {
         clearInterval(questionTimer);
     }
-    // 収集した寿司をクリア
+    // 収集したスコアをクリア
     document.getElementById('sushiCollection').innerHTML = '';
     
-    // 寿司カウントをリセット
+    // スコアカウントをリセット
     const sushiCountEl = document.getElementById('sushiCount');
     if (sushiCountEl) {
         sushiCountEl.textContent = '0';
@@ -243,6 +276,103 @@ function convertToKanji(hiragana, context) {
     return hiragana;
 }
 
+// いい感じ変換デモの状態管理
+let currentSelectedText = '';
+let selectionStart = 0;
+let selectionEnd = 0;
+
+// デモ画面の表示/非表示
+function showConversionDemo() {
+    conversionDemoEl.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    showSection('english'); // デフォルトでEnglishセクションを表示
+    currentTextarea.focus();
+}
+
+function hideConversionDemo() {
+    conversionDemoEl.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    
+    // 全てのテキストエリアをリセット
+    Object.values(textareas).forEach(textarea => {
+        updateSelectionDisplayForTextarea(textarea);
+    });
+    
+    // ゲーム終了後からデモに来た場合は結果画面に戻る
+    if (gameOverEl.innerHTML && !gameStarted) {
+        gameOverEl.classList.add('show');
+    }
+}
+
+// セクション切り替え
+function showSection(sectionName) {
+    // セクションボタンの状態更新
+    sectionBtns.forEach(btn => {
+        if (btn.getAttribute('data-section') === sectionName) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // セクションの表示切り替え
+    demoSections.forEach(section => {
+        if (section.id === sectionName + 'Section') {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+        }
+    });
+    
+    // 現在のセクションとテキストエリアを更新
+    currentSection = sectionName;
+    currentTextarea = textareas[sectionName];
+    
+    // 選択状態を更新
+    updateSelectionDisplayForTextarea(currentTextarea);
+}
+
+// プロンプトウィンドウの表示/非表示
+function showPromptWindow() {
+    if (currentSelectedText) {
+        selectedTextDisplayEl.textContent = currentSelectedText;
+        conversionPromptWindowEl.style.display = 'flex';
+        conversionPromptEl.focus();
+    }
+}
+
+function hidePromptWindow() {
+    conversionPromptWindowEl.style.display = 'none';
+    conversionPromptEl.value = '';
+}
+
+// テキスト選択状態の更新（特定のテキストエリア用）
+function updateSelectionDisplayForTextarea(textarea) {
+    const selectionDisplay = textarea.parentElement.querySelector('.selection-display');
+    const convertBtn = textarea.parentElement.querySelector('.convert-btn');
+    
+    const selection = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+    
+    if (selection.length > 0) {
+        selectionDisplay.textContent = `選択されたテキスト: "${selection}"`;
+        convertBtn.disabled = false;
+        
+        // 現在のテキストエリアの場合は、グローバル状態も更新
+        if (textarea === currentTextarea) {
+            currentSelectedText = selection;
+            selectionStart = textarea.selectionStart;
+            selectionEnd = textarea.selectionEnd;
+        }
+    } else {
+        selectionDisplay.textContent = '選択されたテキスト: なし';
+        convertBtn.disabled = true;
+        
+        if (textarea === currentTextarea) {
+            currentSelectedText = '';
+        }
+    }
+}
+
 function checkAnswer() {
     if (!gameStarted || isProcessing) return;
     
@@ -298,7 +428,7 @@ function collectSushi() {
         collectedPlate.style.animationDelay = '0s';
         sushiCollection.appendChild(collectedPlate);
         
-        // 寿司カウントを更新
+        // スコアカウントを更新
         if (sushiCountEl) {
             sushiCountEl.textContent = correctCount;
         }
@@ -393,7 +523,7 @@ function saveRanking(score, correct, time) {
     rankings.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
     rankings.splice(10);
     
-    // 今日食べた寿司数を更新
+    // 今日獲得したスコア数を更新
     updateDailySushiCount(correct);
     
     try {
@@ -458,8 +588,8 @@ function displayResult(score, correct, time) {
                         <div class="score-breakdown">
                             <div class="breakdown-item">
                                 <span class="breakdown-icon">🍣</span>
-                                <span class="breakdown-label">取得した寿司</span>
-                                <span class="breakdown-value">${correct}貫</span>
+                                <span class="breakdown-label">正解問題数</span>
+                                <span class="breakdown-value">${correct}問</span>
                             </div>
                             <div class="breakdown-item">
                                 <span class="breakdown-icon">⏱️</span>
@@ -476,7 +606,7 @@ function displayResult(score, correct, time) {
                 <div class="stats-section">
                     <div class="daily-stats">
                         <h4>📅 本日の累計</h4>
-                        <div class="daily-count">${dailySushiCount}貫の寿司を獲得</div>
+                        <div class="daily-count">${dailySushiCount}問の正解を獲得</div>
                     </div>
                 </div>
 
@@ -485,6 +615,13 @@ function displayResult(score, correct, time) {
                     <div class="name-input-group">
                         <input type="text" id="playerName" value="${lastEntry.name || ''}" placeholder="お名前を入力してください" maxlength="20">
                         <button id="updateNameBtn" class="register-btn">登録</button>
+                    </div>
+                </div>
+
+                <div class="conversion-tour-section">
+                    <h4>🤖 いい感じ変換を体験してみませんか？</h4>
+                    <div class="conversion-tour-links">
+                        <a href="good-feeling-conversion.html" class="tour-link">🤖 いい感じ変換デモ</a>
                     </div>
                 </div>
 
@@ -654,5 +791,81 @@ function displayRankingPreview() {
 
 startBtnEl.addEventListener('click', startGame);
 resetBtnEl.addEventListener('click', resetGame);
+
+// いい感じ変換デモのイベントリスナー
+tryConversionBtn.addEventListener('click', showConversionDemo);
+closeDemoBtnEl.addEventListener('click', hideConversionDemo);
+backToGameBtnEl.addEventListener('click', hideConversionDemo);
+
+// プロンプトウィンドウのイベントリスナー
+closePromptBtnEl.addEventListener('click', hidePromptWindow);
+cancelConversionBtnEl.addEventListener('click', hidePromptWindow);
+
+// セクション切り替えボタンのイベントリスナー
+sectionBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const section = btn.getAttribute('data-section');
+        showSection(section);
+        currentTextarea.focus();
+    });
+});
+
+// 各テキストエリアにイベントリスナーを追加
+Object.values(textareas).forEach(textarea => {
+    // 選択状態を監視
+    textarea.addEventListener('select', () => {
+        updateSelectionDisplayForTextarea(textarea);
+    });
+    
+    textarea.addEventListener('mouseup', () => {
+        updateSelectionDisplayForTextarea(textarea);
+    });
+    
+    textarea.addEventListener('keyup', () => {
+        updateSelectionDisplayForTextarea(textarea);
+    });
+    
+    // Ctrl+S でプロンプトウィンドウを開く
+    textarea.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault(); // ブラウザの保存ダイアログを防ぐ
+            e.stopPropagation();
+            // フォーカスが当たっているテキストエリアを現在のものとして設定
+            currentTextarea = textarea;
+            currentSelectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+            showPromptWindow();
+        }
+    });
+    
+    // 変換ボタンにイベントリスナーを追加
+    const convertBtn = textarea.parentElement.querySelector('.convert-btn');
+    convertBtn.addEventListener('click', () => {
+        currentTextarea = textarea;
+        currentSelectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+        showPromptWindow();
+    });
+});
+
+// プロンプト例ボタンのイベントリスナー
+promptExampleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const prompt = btn.getAttribute('data-prompt');
+        conversionPromptEl.value = prompt;
+    });
+});
+
+// デモ画面の背景クリックで閉じる
+conversionDemoEl.addEventListener('click', (e) => {
+    if (e.target === conversionDemoEl) {
+        hideConversionDemo();
+    }
+});
+
+// プロンプトウィンドウの背景クリックで閉じる
+conversionPromptWindowEl.addEventListener('click', (e) => {
+    if (e.target === conversionPromptWindowEl) {
+        hidePromptWindow();
+    }
+});
 
 initGame();

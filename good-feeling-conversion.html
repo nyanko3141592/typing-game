@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>いい感じ変換デモ - azooKey on macOS</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 専用のスタイル */
+        .conversion-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%);
+            padding: 20px;
+        }
+        
+        .conversion-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-header h1 {
+            color: #2e7d32;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .how-to-use {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .how-to-use h3 {
+            color: #2e7d32;
+            margin: 0 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .how-to-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .how-to-steps li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .how-to-steps li:before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 8px;
+            background: #4caf50;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .how-to-steps {
+            counter-reset: step-counter;
+        }
+        
+        .conversion-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .conversion-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .conversion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .card-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+        }
+        
+        .card-description {
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .card-content {
+            padding: 30px;
+        }
+        
+        .demo-playground {
+            margin-bottom: 25px;
+        }
+        
+        .demo-textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+            resize: vertical;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            transition: all 0.3s;
+            min-height: 80px;
+            margin-bottom: 15px;
+        }
+        
+        .demo-textarea:focus {
+            outline: none;
+            border-color: #2e7d32;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+        }
+        
+        
+        .expected-output {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .expected-output h4 {
+            color: #2e7d32;
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+        }
+        
+        .expected-text {
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="conversion-page">
+        <div class="conversion-container">
+            <div class="page-header">
+                <h1>🤖 いい感じ変換デモ</h1>
+                <p class="page-subtitle">
+                    azooKey on macOSの「いい感じ変換」機能を体験してみましょう！<br>
+                    テキストを選択してCtrl+Sで、プロンプトに応じて文章を変換できます。
+                </p>
+                
+                <div class="how-to-use">
+                    <h3>💡 azooKey on macOSでの使い方</h3>
+                    <ol class="how-to-steps">
+                        <li>テキストエディタで文章を入力</li>
+                        <li>変換したい部分をマウスで選択</li>
+                        <li><strong>Ctrl+S</strong> を押す</li>
+                        <li>表示されるウィンドウでプロンプトを入力</li>
+                        <li>選択した文章が指定した形式に変換されます</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="conversion-cards">
+                <!-- English変換カード -->
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>🌍 English変換</h2>
+                        <p class="card-description">日本語の文章を英語に変換します</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="変換プロンプト: English">私は直希です。よろしくお願いします。</textarea>
+                        </div>
+                        <div class="expected-output">
+                            <h4>期待される変換結果</h4>
+                            <p class="expected-text">I am Naoki. Nice to meet you.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 絵文字デコカード -->
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>😄 絵文字デコ</h2>
+                        <p class="card-description">文章を絵文字でデコレーションします</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="変換プロンプト: 絵文字でデコって">今日はテンション上がるね。頑張ろう！</textarea>
+                        </div>
+                        <div class="expected-output">
+                            <h4>期待される変換結果</h4>
+                            <p class="expected-text">🎉 今日は ✨ テンション 📈 上がるね 😄！💪 頑張ろう 🔥！</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ビジネスメールカード -->
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>💼 ビジネスメール</h2>
+                        <p class="card-description">カジュアルな文章をビジネス向けに修正します</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="変換プロンプト: ビジネスメールとして修正">お世話に〜。直希です。資料できたから送るね。</textarea>
+                        </div>
+                        <div class="expected-output">
+                            <h4>期待される変換結果</h4>
+                            <p class="expected-text">お世話になっております。直希でございます。資料が完成いたしましたので、送付させていただきます。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- カジュアル変換カード -->
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>😊 カジュアル変換</h2>
+                        <p class="card-description">堅い文章をカジュアルにします</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="変換プロンプト: カジュアルに変換">本日はお忙しい中、貴重なお時間をいただき、誠にありがとうございました。</textarea>
+                        </div>
+                        <div class="expected-output">
+                            <h4>期待される変換結果</h4>
+                            <p class="expected-text">今日は忙しい中、時間作ってくれてありがとう！</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 敬語変換カード -->
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>🙏 敬語変換</h2>
+                        <p class="card-description">普通の文章を敬語にします</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="変換プロンプト: 敬語に変換">会議は明日の10時からです。資料を用意してください。</textarea>
+                        </div>
+                        <div class="expected-output">
+                            <h4>期待される変換結果</h4>
+                            <p class="expected-text">会議は明日の10時からでございます。資料をご用意いただけますでしょうか。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="back-link">
+                <a href="index.html" class="back-btn">タイピングゲームに戻る</a>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="good-feeling-conversion.js"></script>
+</body>
+</html>
