@@ -10,22 +10,24 @@ let questionStartTime = 0;
 let gameStarted = false;
 let timerInterval = null;
 let isProcessing = false;
+let questionTimer = null;
+let correctCount = 0;
 
-const userConvertedEl = document.getElementById('userConverted');
-const userInputEl = document.getElementById('userInput');
-const submitBtnEl = document.getElementById('submitBtn');
-const expectedAnswerEl = document.getElementById('expectedAnswer');
-const feedbackEl = document.getElementById('feedback');
-const currentQuestionEl = document.getElementById('currentQuestion');
-const progressFillEl = document.getElementById('progressFill');
-const gameOverEl = document.getElementById('gameOver');
-const restartBtnEl = document.getElementById('restartBtn');
-const gameAreaEl = document.querySelector('.game-area');
-const startScreenEl = document.getElementById('startScreen');
-const startBtnEl = document.getElementById('startBtn');
-const resetBtnEl = document.getElementById('resetBtn');
-const rankingPreviewEl = document.getElementById('rankingPreview');
-const gameTimerEl = document.getElementById('gameTimer');
+// DOM要素は関数内で取得（初期化後に取得）
+let userConvertedEl, userInputEl, submitBtnEl, expectedAnswerEl, feedbackEl;
+let currentQuestionEl, progressFillEl, gameOverEl, gameAreaEl, startScreenEl;
+let startBtnEl, resetBtnEl, rankingPreviewEl, gameTimerEl;
+
+// いい感じ変換デモ関連の要素（後で初期化）
+let tryConversionBtn, conversionDemoEl, closeDemoBtnEl, backToGameBtnEl;
+let sectionBtns, demoSections, textareas;
+let currentSection = 'english';
+let currentTextarea;
+
+// プロンプトウィンドウ関連の要素（後で初期化）
+let conversionPromptWindowEl, closePromptBtnEl, selectedTextDisplayEl;
+let conversionPromptEl, conversionResultDisplayEl, executeConversionBtnEl;
+let applyConversionBtnEl, cancelConversionBtnEl, promptExampleBtns;
 
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -43,7 +45,7 @@ async function loadQuestionsFromJSON() {
         questions = data.questions.map(q => ({
             context: q.context,
             answer: q.hiragana,
-            fullDisplay: q.context + q.kanji
+            fullDisplay: q.kanji
         }));
         hiraganaToKanji = data.conversionRules;
         questionsLoaded = true;
@@ -62,15 +64,43 @@ async function initGame() {
 }
 
 async function startGame() {
+    console.log('startGame called');
+    console.log('questionsLoaded:', questionsLoaded);
+    console.log('questions length:', questions.length);
+    
+    // 問題データが読み込まれていない場合は読み込む
+    if (!questionsLoaded || questions.length === 0) {
+        console.log('Loading questions...');
+        await loadQuestionsFromJSON();
+    }
+    
+    if (questions.length === 0) {
+        console.error('No questions available');
+        alert('問題データの読み込みに失敗しました。');
+        return;
+    }
+    
     const selectedQuestions = questions.length > 10 
         ? shuffleArray(questions).slice(0, 10)
         : shuffleArray(questions);
     
     gameQuestions = selectedQuestions;
     currentQuestionIndex = 0;
+    correctCount = 0;
     totalTime = 0;
     startTime = Date.now();
     gameStarted = true;
+    
+    console.log('Game starting with', gameQuestions.length, 'questions');
+    
+    // スコアコレクションをクリア
+    document.getElementById('sushiCollection').innerHTML = '';
+    
+    // スコアカウントをリセット
+    const sushiCountEl = document.getElementById('sushiCount');
+    if (sushiCountEl) {
+        sushiCountEl.textContent = '0';
+    }
     
     startScreenEl.style.display = 'none';
     gameAreaEl.style.display = 'block';
@@ -101,6 +131,22 @@ function stopTimer() {
 function resetGame() {
     gameStarted = false;
     stopTimer();
+    if (questionTimer) {
+        clearInterval(questionTimer);
+    }
+    // 収集したスコアをクリア
+    document.getElementById('sushiCollection').innerHTML = '';
+    
+    // スコアカウントをリセット
+    const sushiCountEl = document.getElementById('sushiCount');
+    if (sushiCountEl) {
+        sushiCountEl.textContent = '0';
+    }
+    
+    // 変数もリセット
+    correctCount = 0;
+    currentQuestionIndex = 0;
+    
     startScreenEl.style.display = 'block';
     gameAreaEl.style.display = 'none';
     gameOverEl.classList.remove('show');
@@ -113,28 +159,142 @@ function loadQuestion() {
         return;
     }
 
-    isProcessing = false; // 新しい問題読み込み時にフラグをリセット
+    isProcessing = false;
     
     const question = gameQuestions[currentQuestionIndex];
     userInputEl.value = question.context;
-    expectedAnswerEl.innerHTML = `<span class="label">期待される結果:</span> ${question.fullDisplay}`;
-    userConvertedEl.innerHTML = '-';
+    expectedAnswerEl.textContent = question.fullDisplay;
+    
+    // フリガナを表示
+    const targetReadingEl = document.getElementById('targetReading');
+    if (targetReadingEl) {
+        targetReadingEl.textContent = question.answer;
+    }
+    
+    userConvertedEl.innerHTML = '<span class="result-label">入力結果:</span> -';
+    
+    // azooKeyの優位性を示すヒントを表示
+    showAzooKeyHint(currentQuestionIndex);
+    
+    addSushiToConveyor();
+    startQuestionTimer();
     
     questionStartTime = Date.now();
     
-    // IMEの文脈読み直しのため、一度フォーカスを外してから再設定
     userInputEl.blur();
     
     setTimeout(() => {
         const cursorPosition = question.context.length;
         userInputEl.setSelectionRange(cursorPosition, cursorPosition);
         userInputEl.focus();
-    }, 50); // 50ms後にフォーカスを当てる
+    }, 50);
     
-    currentQuestionEl.textContent = currentQuestionIndex + 1;
-    progressFillEl.style.width = `${((currentQuestionIndex + 1) / gameQuestions.length) * 100}%`;
+    currentQuestionEl.textContent = currentQuestionIndex;
+    progressFillEl.style.width = `${((currentQuestionIndex) / gameQuestions.length) * 100}%`;
     
     feedbackEl.classList.remove('show', 'correct', 'incorrect');
+}
+
+function showAzooKeyHint(questionIndex) {
+    const hints = [
+        "💡 文脈を理解して自動変換！確定ボタンは不要です",
+        "🚀 一気に最後まで入力すると精度が向上します",
+        "🧠 azooKeyは文章全体を見て最適な変換を選択",
+        "⚡ ライブ変換で思考を止めずに入力続行",
+        "🎯 長い文章ほどazooKeyの文脈理解が活躍",
+        "🔥 従来IMEでは困難な複雑変換もお任せ",
+        "💪 確定の手間なし、ストレスフリーな入力体験",
+        "✨ 文脈で同音異義語を正確に判別",
+        "🌟 最後まで入力してからEnterで一括変換",
+        "🎊 azooKeyの真髄、ライブ変換を体感中！"
+    ];
+    
+    const hintText = hints[questionIndex % hints.length];
+    
+    // ヒント表示エリアを探すか作成
+    let hintEl = document.getElementById('azookey-hint');
+    if (!hintEl) {
+        hintEl = document.createElement('div');
+        hintEl.id = 'azookey-hint';
+        hintEl.className = 'azookey-hint';
+        
+        // ゲームエリア内の適切な場所に追加
+        const questionAreaEl = document.querySelector('.question-area');
+        if (questionAreaEl) {
+            questionAreaEl.insertBefore(hintEl, questionAreaEl.firstChild);
+        }
+    }
+    
+    hintEl.textContent = hintText;
+    hintEl.classList.add('show');
+    
+    // 3秒後にフェードアウト
+    setTimeout(() => {
+        hintEl.classList.remove('show');
+    }, 3000);
+}
+
+
+function addSushiToConveyor() {
+    const sushiItemEl = document.getElementById('sushiItem');
+    const sushiTypes = ['🍣', '🍤', '🐟', '🐠', '🐡', '🦐', '🦑', '🐙'];
+    
+    const sushiPlate = document.createElement('div');
+    sushiPlate.className = 'sushi-plate';
+    
+    const sushi = document.createElement('div');
+    sushi.className = 'sushi';
+    sushi.textContent = sushiTypes[Math.floor(Math.random() * sushiTypes.length)];
+    
+    const plate = document.createElement('div');
+    plate.className = 'plate';
+    
+    sushiPlate.appendChild(sushi);
+    sushiPlate.appendChild(plate);
+    
+    sushiItemEl.innerHTML = '';
+    sushiItemEl.appendChild(sushiPlate);
+    
+    // アニメーションをリセット
+    sushiItemEl.style.animation = 'none';
+    setTimeout(() => {
+        sushiItemEl.style.animation = 'sushi-flow 8s linear';
+    }, 10);
+}
+
+function startQuestionTimer() {
+    if (questionTimer) {
+        clearInterval(questionTimer);
+    }
+    
+    let elapsed = 0;
+    
+    questionTimer = setInterval(() => {
+        elapsed += 100;
+        
+        if (elapsed >= 8000) {
+            clearInterval(questionTimer);
+            if (!isProcessing) {
+                skipQuestion();
+            }
+        }
+    }, 100);
+}
+
+function skipQuestion() {
+    console.log('skipQuestion呼び出し, isProcessing:', isProcessing);
+    if (isProcessing) return;
+    isProcessing = true;
+    
+    console.log('時間切れ処理開始');
+    showFeedback('😢 時間切れです...', 'incorrect');
+    
+    setTimeout(() => {
+        console.log('時間切れ後次の問題へ');
+        currentQuestionIndex++;
+        loadQuestion();
+        isProcessing = false;
+    }, 1000);
 }
 
 function convertToKanji(hiragana, context) {
@@ -142,6 +302,103 @@ function convertToKanji(hiragana, context) {
         return hiraganaToKanji[hiragana][context];
     }
     return hiragana;
+}
+
+// いい感じ変換デモの状態管理
+let currentSelectedText = '';
+let selectionStart = 0;
+let selectionEnd = 0;
+
+// デモ画面の表示/非表示
+function showConversionDemo() {
+    conversionDemoEl.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    showSection('english'); // デフォルトでEnglishセクションを表示
+    currentTextarea.focus();
+}
+
+function hideConversionDemo() {
+    conversionDemoEl.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    
+    // 全てのテキストエリアをリセット
+    Object.values(textareas).forEach(textarea => {
+        updateSelectionDisplayForTextarea(textarea);
+    });
+    
+    // ゲーム終了後からデモに来た場合は結果画面に戻る
+    if (gameOverEl.innerHTML && !gameStarted) {
+        gameOverEl.classList.add('show');
+    }
+}
+
+// セクション切り替え
+function showSection(sectionName) {
+    // セクションボタンの状態更新
+    sectionBtns.forEach(btn => {
+        if (btn.getAttribute('data-section') === sectionName) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // セクションの表示切り替え
+    demoSections.forEach(section => {
+        if (section.id === sectionName + 'Section') {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+        }
+    });
+    
+    // 現在のセクションとテキストエリアを更新
+    currentSection = sectionName;
+    currentTextarea = textareas[sectionName];
+    
+    // 選択状態を更新
+    updateSelectionDisplayForTextarea(currentTextarea);
+}
+
+// プロンプトウィンドウの表示/非表示
+function showPromptWindow() {
+    if (currentSelectedText) {
+        selectedTextDisplayEl.textContent = currentSelectedText;
+        conversionPromptWindowEl.style.display = 'flex';
+        conversionPromptEl.focus();
+    }
+}
+
+function hidePromptWindow() {
+    conversionPromptWindowEl.style.display = 'none';
+    conversionPromptEl.value = '';
+}
+
+// テキスト選択状態の更新（特定のテキストエリア用）
+function updateSelectionDisplayForTextarea(textarea) {
+    const selectionDisplay = textarea.parentElement.querySelector('.selection-display');
+    const convertBtn = textarea.parentElement.querySelector('.convert-btn');
+    
+    const selection = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+    
+    if (selection.length > 0) {
+        selectionDisplay.textContent = `選択されたテキスト: "${selection}"`;
+        convertBtn.disabled = false;
+        
+        // 現在のテキストエリアの場合は、グローバル状態も更新
+        if (textarea === currentTextarea) {
+            currentSelectedText = selection;
+            selectionStart = textarea.selectionStart;
+            selectionEnd = textarea.selectionEnd;
+        }
+    } else {
+        selectionDisplay.textContent = '選択されたテキスト: なし';
+        convertBtn.disabled = true;
+        
+        if (textarea === currentTextarea) {
+            currentSelectedText = '';
+        }
+    }
 }
 
 function checkAnswer() {
@@ -152,27 +409,60 @@ function checkAnswer() {
     const fullText = userInputEl.value;
     const question = gameQuestions[currentQuestionIndex];
     
-    // 比較表示を更新
+    console.log('入力:', fullText);
+    console.log('期待:', question.fullDisplay);
+    
     updateComparisonDisplay(fullText, question.fullDisplay);
     
-    // 空白を無視して比較
     const normalizedInput = fullText.replace(/\s+/g, '');
     const normalizedExpected = question.fullDisplay.replace(/\s+/g, '');
     
-    // 最終的な結果が正しければ入力方法に関係なく正解
+    console.log('正規化入力:', normalizedInput);
+    console.log('正規化期待:', normalizedExpected);
+    
     const isCorrect = normalizedInput === normalizedExpected;
     
+    console.log('正解判定:', isCorrect);
+    
     if (isCorrect) {
-        showFeedback('正解！次の問題に進みます', 'correct');
+        console.log('正解処理開始');
+        correctCount++;
+        clearInterval(questionTimer);
+        showFeedback('🍣 ごちそうさま！', 'correct');
+        collectSushi();
         setTimeout(() => {
+            console.log('次の問題へ移行');
             currentQuestionIndex++;
             loadQuestion();
             isProcessing = false;
         }, 1000);
     } else {
-        // 間違いの場合は何も表示せず、入力を保持
         userInputEl.focus();
         isProcessing = false;
+    }
+}
+
+function collectSushi() {
+    const sushiItemEl = document.getElementById('sushiItem');
+    const sushiCollection = document.getElementById('sushiCollection');
+    const sushiCountEl = document.getElementById('sushiCount');
+    const sushiPlate = sushiItemEl.querySelector('.sushi-plate');
+    
+    if (sushiPlate) {
+        const sushiEmoji = sushiPlate.querySelector('.sushi').textContent;
+        const collectedPlate = document.createElement('div');
+        collectedPlate.className = 'collected-plate';
+        collectedPlate.textContent = sushiEmoji;
+        collectedPlate.style.animationDelay = '0s';
+        sushiCollection.appendChild(collectedPlate);
+        
+        // スコアカウントを更新
+        if (sushiCountEl) {
+            sushiCountEl.textContent = correctCount;
+        }
+        
+        sushiItemEl.style.animation = 'none';
+        sushiItemEl.innerHTML = '';
     }
 }
 
@@ -199,8 +489,7 @@ function updateComparisonDisplay(userConverted, expected) {
         }
     }
     
-    // 期待される結果の表示
-    let expectedHTML = '<span class="label">期待される結果:</span> ';
+    let expectedHTML = '';
     if (matchLength > 0) {
         expectedHTML += `<span class="match">${expected.substring(0, matchLength)}</span>`;
     }
@@ -208,8 +497,7 @@ function updateComparisonDisplay(userConverted, expected) {
         expectedHTML += `<span class="no-match">${expected.substring(matchLength)}</span>`;
     }
     
-    // あなたの変換結果の表示
-    let convertedHTML = '<span class="label">あなたの変換結果:</span> ';
+    let convertedHTML = '<span class="result-label">入力結果:</span> ';
     if (matchLength > 0) {
         convertedHTML += `<span class="match">${userConverted.substring(0, matchLength)}</span>`;
     }
@@ -227,40 +515,44 @@ function showFeedback(message, type) {
 }
 
 function endGame() {
-    totalTime = Date.now() - startTime;
     gameStarted = false;
     stopTimer();
-    gameAreaEl.style.display = 'none';
-    gameOverEl.classList.add('show');
+    if (questionTimer) {
+        clearInterval(questionTimer);
+    }
+    totalTime = (Date.now() - startTime) / 1000;
     
-    // 自動でランキングに登録
-    autoSaveRanking();
-    showRankingDisplay();
+    document.activeElement.blur();
+    
+    const finalScore = Math.max(0, 100 - totalTime + correctCount * 10);
+    saveRanking(finalScore, correctCount, totalTime);
+    displayResult(finalScore, correctCount, totalTime);
 }
 
-function autoSaveRanking() {
-    const timeInSeconds = (totalTime / 1000).toFixed(2);
-    const defaultName = '無名' + Math.floor(Math.random() * 1000);
-    
+function saveRanking(score, correct, time) {
     const rankings = getRankings();
     const now = new Date();
     const newEntry = {
-        id: Date.now() + Math.random(), // 一意なID
-        name: defaultName,
-        time: parseFloat(timeInSeconds),
+        id: Date.now() + Math.random(),
+        name: '無名' + Math.floor(Math.random() * 1000),
+        score: score.toFixed(2),
+        correct: correct,
+        time: time.toFixed(2),
         date: now.toLocaleDateString('ja-JP', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+            minute: '2-digit'
         })
     };
     
     rankings.push(newEntry);
-    rankings.sort((a, b) => a.time - b.time);
+    rankings.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
     rankings.splice(10);
+    
+    // 今日獲得したスコア数を更新
+    updateDailySushiCount(correct);
     
     try {
         localStorage.setItem('typingGameRankings', JSON.stringify(rankings));
@@ -270,37 +562,148 @@ function autoSaveRanking() {
     }
 }
 
-function showRankingDisplay() {
-    const timeInSeconds = (totalTime / 1000).toFixed(2);
+function updateDailySushiCount(count) {
+    const today = new Date().toDateString();
+    const dailyDataKey = 'typingGameDailyData';
+    let dailyData = JSON.parse(localStorage.getItem(dailyDataKey) || '{}');
+    
+    if (!dailyData[today]) {
+        dailyData[today] = { totalSushi: 0 };
+    }
+    
+    dailyData[today].totalSushi += count;
+    
+    try {
+        localStorage.setItem(dailyDataKey, JSON.stringify(dailyData));
+    } catch (error) {
+        console.error('日次データの保存に失敗しました:', error);
+    }
+}
+
+function getDailySushiCount() {
+    const today = new Date().toDateString();
+    const dailyData = JSON.parse(localStorage.getItem('typingGameDailyData') || '{}');
+    return dailyData[today]?.totalSushi || 0;
+}
+
+function displayResult(score, correct, time) {
+    gameAreaEl.style.display = 'none';
+    gameOverEl.classList.add('show');
+    
     const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
+    const dailySushiCount = getDailySushiCount();
     
     const rankingDisplayHTML = `
-        <div class="ranking-display">
-            <h3>ゲーム完了！</h3>
-            <p class="time-display">完了タイム: ${timeInSeconds}秒</p>
-            <div class="name-edit">
-                <label>名前: </label>
-                <input type="text" id="playerName" value="${lastEntry.name || ''}" maxlength="20">
-                <button id="updateNameBtn" class="update-name-btn">名前更新</button>
+        <div class="result-container">
+            <div class="result-header">
+                <div class="completion-badge">
+                    <div class="badge-icon">🎉</div>
+                    <h2 class="completion-title">お疲れさまでした！</h2>
+                    <p class="completion-subtitle">azooKey on macOSの体験はいかがでしたか？</p>
+                </div>
+            </div>
+            
+            <div class="result-content">
+                <div class="score-section">
+                    <div class="main-score-card">
+                        <div class="score-header">
+                            <h3>あなたのスコア</h3>
+                        </div>
+                        <div class="score-display">
+                            <div class="score-value">${score.toFixed(2)}</div>
+                            <div class="score-unit">点</div>
+                        </div>
+                        <div class="score-breakdown">
+                            <div class="breakdown-item">
+                                <span class="breakdown-icon">🍣</span>
+                                <span class="breakdown-label">正解問題数</span>
+                                <span class="breakdown-value">${correct}問</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-icon">⏱️</span>
+                                <span class="breakdown-label">クリア時間</span>
+                                <span class="breakdown-value">${time.toFixed(2)}秒</span>
+                            </div>
+                        </div>
+                        <div class="score-formula">
+                            <p>スコア計算式: 100 - タイム + (取得数 × 10)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <div class="daily-stats">
+                        <h4>📅 本日の累計</h4>
+                        <div class="daily-count">${dailySushiCount}問の正解を獲得</div>
+                    </div>
+                </div>
+
+                <div class="name-registration">
+                    <h4>ランキングに登録</h4>
+                    <div class="name-input-group">
+                        <input type="text" id="playerName" value="${lastEntry.name || ''}" placeholder="お名前を入力してください" maxlength="20">
+                        <button id="updateNameBtn" class="register-btn">登録</button>
+                    </div>
+                </div>
+
+                <div class="conversion-tour-section">
+                    <div class="tour-highlight">
+                        <h4>🎉 お疲れさまでした！次はもう一つの革新機能を体験しませんか？</h4>
+                        <div class="next-feature-preview">
+                            <div class="feature-preview-card">
+                                <div class="preview-header">
+                                    <h5>🤖 いい感じ変換</h5>
+                                    <p class="preview-subtitle">プロンプト1つで文章を自在に変換</p>
+                                </div>
+                                <div class="preview-example">
+                                    <div class="example-before">「今日は疲れた」を選択</div>
+                                    <div class="example-action">Ctrl+S → "English"</div>
+                                    <div class="example-after">「I'm tired today」</div>
+                                </div>
+                                <div class="preview-benefits">
+                                    <span class="benefit-tag">English変換</span>
+                                    <span class="benefit-tag">絵文字デコ</span>
+                                    <span class="benefit-tag">敬語変換</span>
+                                    <span class="benefit-tag">カジュアル化</span>
+                                </div>
+                                <a href="good-feeling-conversion.html" class="next-experience-btn">🚀 いい感じ変換を体験する</a>
+                            </div>
+                        </div>
+                        <div class="completion-message">
+                            <p>✨ 文脈変換とプロンプト変換、両方体験してazooKeyの全貌を知ろう！</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions-section">
+                    <button id="restartBtn" class="action-btn primary">もう一度プレイ</button>
+                    <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="action-btn secondary">
+                        azooKey on macOSについて詳しく
+                    </a>
+                </div>
+            </div>
+            
+            <div class="ranking-section">
+                <div class="ranking-list" id="rankingList"></div>
             </div>
         </div>
-        <div class="ranking-list" id="rankingList"></div>
     `;
     
-    const existingDisplay = document.querySelector('.ranking-display');
-    const existingRankingList = document.querySelector('.ranking-list');
-    if (existingDisplay) existingDisplay.remove();
-    if (existingRankingList) existingRankingList.remove();
+    // 既存の要素をクリア
+    gameOverEl.innerHTML = '';
     
     gameOverEl.insertAdjacentHTML('beforeend', rankingDisplayHTML);
     
+    // イベントリスナーを追加
     const updateBtn = document.getElementById('updateNameBtn');
     const nameInput = document.getElementById('playerName');
+    const restartBtn = document.getElementById('restartBtn');
     
     updateBtn.addEventListener('click', () => updatePlayerName());
     nameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') updatePlayerName();
     });
+    restartBtn.addEventListener('click', resetGame);
     
     displayRankings();
 }
@@ -369,8 +772,9 @@ function displayRankings() {
                 <div class="entry-details">
                     <div class="name-time">
                         <span class="name">${entry.name}</span>
-                        <span class="time">${entry.time}秒</span>
+                        <span class="score">スコア: ${entry.score}点</span>
                     </div>
+                    <div class="stats">🍣${entry.correct}貫 | ⏱${entry.time}秒</div>
                     <div class="date">${entry.date}</div>
                 </div>
             </li>
@@ -382,35 +786,13 @@ function displayRankings() {
 }
 
 
-userInputEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        checkAnswer();
-    }
-});
-
-userInputEl.addEventListener('input', (e) => {
-    const text = e.target.value;
-    
-    if (!gameStarted || currentQuestionIndex >= gameQuestions.length) return;
-    
-    const question = gameQuestions[currentQuestionIndex];
-    
-    // 入力中のリアルタイム表示（入力方法に関係なく結果を表示）
-    const userAnswer = text.replace(question.context, '').trim();
-    if (userAnswer) {
-        updateComparisonDisplay(text, question.fullDisplay);
-    } else {
-        userConvertedEl.innerHTML = '-';
-        expectedAnswerEl.innerHTML = `<span class="label">期待される結果:</span> ${question.fullDisplay}`;
-    }
-});
-
 function displayRankingPreview() {
     const rankings = getRankings();
     
     if (rankings.length === 0) {
-        rankingPreviewEl.innerHTML = '';
+        if (rankingPreviewEl) {
+            rankingPreviewEl.innerHTML = '';
+        }
         return;
     }
     
@@ -422,8 +804,9 @@ function displayRankingPreview() {
                 <div class="entry-details">
                     <div class="name-time">
                         <span class="name">${entry.name}</span>
-                        <span class="time">${entry.time}秒</span>
+                        <span class="score">スコア: ${entry.score}点</span>
                     </div>
+                    <div class="stats">🍣${entry.correct}貫 | ⏱${entry.time}秒</div>
                     <div class="date">${entry.date}</div>
                 </div>
             </li>
@@ -431,11 +814,240 @@ function displayRankingPreview() {
     });
     html += '</ol>';
     
-    rankingPreviewEl.innerHTML = html;
+    if (rankingPreviewEl) {
+        rankingPreviewEl.innerHTML = html;
+    }
 }
 
-startBtnEl.addEventListener('click', startGame);
-resetBtnEl.addEventListener('click', resetGame);
-restartBtnEl.addEventListener('click', resetGame);
+// ツアー機能
+function startTypingDemo() {
+    // azookeyショーケースを非表示にしてゲーム画面に移行
+    const showcaseEl = document.getElementById('azookeyShowcase');
+    const startScreenEl = document.getElementById('startScreen');
+    
+    if (showcaseEl) {
+        showcaseEl.style.display = 'none';
+    }
+    startScreenEl.style.display = 'block';
+    
+    // スムーズスクロール
+    startScreenEl.scrollIntoView({ behavior: 'smooth' });
+}
 
-initGame();
+// ページ読み込み時にショーケースを表示、ゲーム画面を非表示
+function initializePage() {
+    const showcaseEl = document.getElementById('azookeyShowcase');
+    const startScreenEl = document.getElementById('startScreen');
+    
+    if (showcaseEl) {
+        showcaseEl.style.display = 'block';
+    }
+    if (startScreenEl) {
+        startScreenEl.style.display = 'none';
+    }
+}
+
+// DOM要素を初期化する関数
+function initializeElements() {
+    // 基本的なゲーム要素
+    userConvertedEl = document.getElementById('userConverted');
+    userInputEl = document.getElementById('userInput');
+    submitBtnEl = document.getElementById('submitBtn');
+    expectedAnswerEl = document.getElementById('expectedAnswer');
+    feedbackEl = document.getElementById('feedback');
+    currentQuestionEl = document.getElementById('currentQuestion');
+    progressFillEl = document.getElementById('progressFill');
+    gameOverEl = document.getElementById('gameOver');
+    gameAreaEl = document.querySelector('.game-area');
+    startScreenEl = document.getElementById('startScreen');
+    startBtnEl = document.getElementById('startBtn');
+    resetBtnEl = document.getElementById('resetBtn');
+    rankingPreviewEl = document.getElementById('rankingPreview');
+    gameTimerEl = document.getElementById('gameTimer');
+
+    // いい感じ変換デモ関連の要素
+    tryConversionBtn = document.getElementById('tryConversionBtn');
+    conversionDemoEl = document.getElementById('conversionDemo');
+    closeDemoBtnEl = document.getElementById('closeDemoBtn');
+    backToGameBtnEl = document.getElementById('backToGameBtn');
+    sectionBtns = document.querySelectorAll('.section-btn');
+    demoSections = document.querySelectorAll('.demo-section');
+    
+    textareas = {
+        english: document.getElementById('englishTextarea'),
+        emoji: document.getElementById('emojiTextarea'),
+        business: document.getElementById('businessTextarea'),
+        casual: document.getElementById('casualTextarea'),
+        formal: document.getElementById('formalTextarea')
+    };
+    
+    if (textareas.english) {
+        currentTextarea = textareas.english;
+    }
+
+    // プロンプトウィンドウ関連の要素
+    conversionPromptWindowEl = document.getElementById('conversionPromptWindow');
+    closePromptBtnEl = document.getElementById('closePromptBtn');
+    selectedTextDisplayEl = document.getElementById('selectedTextDisplay');
+    conversionPromptEl = document.getElementById('conversionPrompt');
+    conversionResultDisplayEl = document.getElementById('conversionResultDisplay');
+    executeConversionBtnEl = document.getElementById('executeConversionBtn');
+    applyConversionBtnEl = document.getElementById('applyConversionBtn');
+    cancelConversionBtnEl = document.getElementById('cancelConversionBtn');
+    promptExampleBtns = document.querySelectorAll('.prompt-example-btn');
+    
+    // イベントリスナーを設定
+    setupEventListeners();
+}
+
+// イベントリスナーを設定する関数
+function setupEventListeners() {
+    // 基本的なゲームイベント
+    if (userInputEl) {
+        userInputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkAnswer();
+            }
+        });
+
+        userInputEl.addEventListener('input', (e) => {
+            const text = e.target.value;
+            
+            if (!gameStarted || currentQuestionIndex >= gameQuestions.length) return;
+            
+            const question = gameQuestions[currentQuestionIndex];
+            
+            // 入力中のリアルタイム表示（入力方法に関係なく結果を表示）
+            const userAnswer = text.replace(question.context, '').trim();
+            if (userAnswer) {
+                updateComparisonDisplay(text, question.fullDisplay);
+            } else {
+                userConvertedEl.innerHTML = '-';
+                expectedAnswerEl.textContent = question.fullDisplay;
+            }
+        });
+    }
+    
+    if (startBtnEl) {
+        startBtnEl.addEventListener('click', startGame);
+    }
+    
+    if (resetBtnEl) {
+        resetBtnEl.addEventListener('click', resetGame);
+    }
+
+    // いい感じ変換デモのイベントリスナー
+    if (tryConversionBtn) {
+        tryConversionBtn.addEventListener('click', showConversionDemo);
+    }
+    if (closeDemoBtnEl) {
+        closeDemoBtnEl.addEventListener('click', hideConversionDemo);
+    }
+    if (backToGameBtnEl) {
+        backToGameBtnEl.addEventListener('click', hideConversionDemo);
+    }
+
+    // プロンプトウィンドウのイベントリスナー
+    if (closePromptBtnEl) {
+        closePromptBtnEl.addEventListener('click', hidePromptWindow);
+    }
+    if (cancelConversionBtnEl) {
+        cancelConversionBtnEl.addEventListener('click', hidePromptWindow);
+    }
+
+    // セクション切り替えボタンのイベントリスナー
+    if (sectionBtns) {
+        sectionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const section = btn.getAttribute('data-section');
+                showSection(section);
+                if (currentTextarea) {
+                    currentTextarea.focus();
+                }
+            });
+        });
+    }
+
+    // 各テキストエリアにイベントリスナーを追加
+    if (textareas) {
+        Object.values(textareas).forEach(textarea => {
+            if (!textarea) return;
+            
+            // 選択状態を監視
+            textarea.addEventListener('select', () => {
+                updateSelectionDisplayForTextarea(textarea);
+            });
+            
+            textarea.addEventListener('mouseup', () => {
+                updateSelectionDisplayForTextarea(textarea);
+            });
+            
+            textarea.addEventListener('keyup', () => {
+                updateSelectionDisplayForTextarea(textarea);
+            });
+            
+            // Ctrl+S でプロンプトウィンドウを開く
+            textarea.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault(); // ブラウザの保存ダイアログを防ぐ
+                    e.stopPropagation();
+                    // フォーカスが当たっているテキストエリアを現在のものとして設定
+                    currentTextarea = textarea;
+                    currentSelectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+                    showPromptWindow();
+                }
+            });
+            
+            // 変換ボタンにイベントリスナーを追加
+            const convertBtn = textarea.parentElement.querySelector('.convert-btn');
+            if (convertBtn) {
+                convertBtn.addEventListener('click', () => {
+                    currentTextarea = textarea;
+                    currentSelectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+                    showPromptWindow();
+                });
+            }
+        });
+    }
+
+    // プロンプト例ボタンのイベントリスナー
+    if (promptExampleBtns) {
+        promptExampleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const prompt = btn.getAttribute('data-prompt');
+                if (conversionPromptEl) {
+                    conversionPromptEl.value = prompt;
+                }
+            });
+        });
+    }
+
+    // デモ画面の背景クリックで閉じる
+    if (conversionDemoEl) {
+        conversionDemoEl.addEventListener('click', (e) => {
+            if (e.target === conversionDemoEl) {
+                hideConversionDemo();
+            }
+        });
+    }
+
+    // プロンプトウィンドウの背景クリックで閉じる
+    if (conversionPromptWindowEl) {
+        conversionPromptWindowEl.addEventListener('click', (e) => {
+            if (e.target === conversionPromptWindowEl) {
+                hidePromptWindow();
+            }
+        });
+    }
+}
+
+// DOM読み込み後に初期化
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM要素を初期化
+    initializeElements();
+    
+    // ページ初期化
+    initializePage();
+    initGame();
+});

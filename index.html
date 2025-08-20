@@ -9,55 +9,314 @@
 <body>
     <div class="container">
         <header>
-            <h1>Context-Conditioned Composing Contest</h1>
-            <p class="subtitle">文脈を読んで変換する日本語IME向けタイピングゲーム</p>
+            <div class="hero-section">
+                <h1>🚀 azooKey on macOS</h1>
+                <p class="hero-subtitle">次世代日本語IME - 革命的な高精度変換を体験</p>
+                <div class="hero-features">
+                    <div class="feature-highlight">
+                        <span class="feature-icon">🧠</span>
+                        <span class="feature-text">AI搭載の文脈理解</span>
+                    </div>
+                    <div class="feature-highlight">
+                        <span class="feature-icon">⚡</span>
+                        <span class="feature-text">ライブ変換</span>
+                    </div>
+                    <div class="feature-highlight">
+                        <span class="feature-icon">🤖</span>
+                        <span class="feature-text">いい感じ変換</span>
+                    </div>
+                </div>
+            </div>
         </header>
+
+        <!-- azooKey on macOS メイン紹介セクション -->
+        <div class="azookey-showcase" id="azookeyShowcase">
+            <div class="showcase-content">
+                <div class="showcase-header">
+                    <h2>🎯 なぜazooKey on macOSが革新的なのか？</h2>
+                    <p class="showcase-subtitle">従来のIMEとは次元の違う高精度変換を実現</p>
+                </div>
+                
+                <div class="showcase-features">
+                    <div class="showcase-feature-card">
+                        <div class="feature-card-header">
+                            <h3>📝 長文一括変換の威力</h3>
+                        </div>
+                        <div class="feature-card-content">
+                            <p><strong>従来のIME：</strong> 短い文節ごとに確定が必要</p>
+                            <p><strong>azooKey：</strong> 文章全体を理解して一括変換</p>
+                            <div class="comparison-example">
+                                <div class="old-way">
+                                    <span class="label">従来</span>
+                                    <span class="text">猫を→確定→飼う→確定</span>
+                                </div>
+                                <div class="new-way">
+                                    <span class="label">azooKey</span>
+                                    <span class="text">ねこをかう → 猫を飼う（一括変換）</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="showcase-feature-card">
+                        <div class="feature-card-header">
+                            <h3>🧠 文脈を読む賢い変換</h3>
+                        </div>
+                        <div class="feature-card-content">
+                            <p>同じ音でも前後の文脈で適切な漢字を自動選択</p>
+                            <div class="context-examples">
+                                <div class="context-example">
+                                    <span class="context">猫を</span>
+                                    <span class="reading">かう</span>
+                                    <span class="arrow">→</span>
+                                    <span class="result">飼う</span>
+                                </div>
+                                <div class="context-example">
+                                    <span class="context">リンゴを</span>
+                                    <span class="reading">かう</span>
+                                    <span class="arrow">→</span>
+                                    <span class="result">買う</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="showcase-feature-card">
+                        <div class="feature-card-header">
+                            <h3>🤖 いい感じ変換</h3>
+                        </div>
+                        <div class="feature-card-content">
+                            <p>テキスト選択 + Ctrl+S でプロンプト変換</p>
+                            <div class="conversion-preview">
+                                <div class="conversion-item">
+                                    <span class="original">今日は疲れた</span>
+                                    <span class="prompt">→ English</span>
+                                    <span class="result">I'm tired today</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="experience-flow">
+                    <h3>💫 azooKey体験の流れ</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>高精度変換を体験</h4>
+                                <p>タイピングゲームで文脈変換の威力を実感</p>
+                                <button class="step-btn" onclick="startTypingDemo()">体験開始</button>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>いい感じ変換を試す</h4>
+                                <p>プロンプト変換の便利さを体験</p>
+                                <a href="good-feeling-conversion.html" class="step-btn">いい感じ変換デモ</a>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>azooKeyを導入</h4>
+                                <p>実際にazooKey on macOSをインストール</p>
+                                <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="step-btn download-btn">ダウンロード</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="start-screen" id="startScreen">
             <div class="start-content">
-                <h2>ゲーム説明</h2>
-                <ul class="instructions-list">
-                    <li>テキストフィールドに表示される文脈の続きを入力します</li>
-                    <li>最終的な文字列が正解と一致すれば正解となります</li>
-                    <li>Enterキーで回答を確定し、正解なら次の問題に進みます</li>
-                    <li>全問題完了までの時間を競います</li>
-                </ul>
+                <h2>🎮 長文変換の威力を体験</h2>
+                <div class="ime-features">
+                    <h3>✨ このゲームで体験できること</h3>
+                    <p class="feature-description">
+                        azooKey on macOSの<strong>文脈理解による高精度変換</strong>を体感！
+                    </p>
+                    <ul class="feature-list">
+                        <li>📖 前後の文脈を読んで適切な漢字に変換</li>
+                        <li>⚡ ライブ変換で確定せずに一気に入力可能</li>
+                        <li>🧠 文章全体を理解して正確な変換を実現</li>
+                        <li>💪 長い文章ほど変換精度が向上</li>
+                    </ul>
+                </div>
+                <div class="game-instructions">
+                    <h3>🎯 ライブ変換の威力を実感しよう</h3>
+                    <div class="live-conversion-benefits">
+                        <div class="benefit-card">
+                            <div class="benefit-icon">⚡</div>
+                            <div class="benefit-content">
+                                <h4>ストレスフリーな入力</h4>
+                                <p>確定の手間なし、思考の流れを止めません</p>
+                            </div>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">🧠</div>
+                            <div class="benefit-content">
+                                <h4>文章全体で判断</h4>
+                                <p>長い文章ほど文脈理解の精度が向上</p>
+                            </div>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">🎯</div>
+                            <div class="benefit-content">
+                                <h4>高精度変換</h4>
+                                <p>従来IMEでは困難な複雑な文脈も正確に判断</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-challenge">
+                        <h4>💪 チャレンジ内容</h4>
+                        <p class="challenge-description">
+                            <strong>文章を一気に最後まで入力してください！</strong><br>
+                            確定せずに連続入力することで、azooKeyの真の実力を体感できます
+                        </p>
+                        
+                        <div class="challenge-comparison">
+                            <div class="old-ime-way">
+                                <h5>❌ 従来IMEの場合</h5>
+                                <div class="typing-flow">
+                                    <span class="step">雑誌に</span>
+                                    <span class="confirm">確定</span>
+                                    <span class="step">のります</span>
+                                    <span class="confirm">選択</span>
+                                    <span class="confirm">確定</span>
+                                </div>
+                                <p class="flow-description">文節ごとに確定・選択が必要</p>
+                            </div>
+                            
+                            <div class="azookey-way">
+                                <h5>✅ azooKeyライブ変換</h5>
+                                <div class="typing-flow">
+                                    <span class="step">ざっしにのります</span>
+                                    <span class="auto-convert">自動変換</span>
+                                    <span class="final">雑誌に載ります</span>
+                                </div>
+                                <p class="flow-description">一気に入力、文脈で自動判断</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="example-box">
+                        <p class="example-title">🔥 超高難度な文脈変換例</p>
+                        <p class="example-subtitle">前の文章によって、後ろの「かう」の変換が決まります</p>
+                        <div class="example-grid">
+                            <div class="example-category">
+                                <p class="category-title">前文：猫を</p>
+                                <div class="example-item advanced">
+                                    <span class="example-context">猫を</span>
+                                    <span class="example-input">かう</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">飼う</span>
+                                </div>
+                                <div class="example-item advanced">
+                                    <span class="example-context">リンゴを</span>
+                                    <span class="example-input">かう</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">買う</span>
+                                </div>
+                            </div>
+                            <div class="example-category">
+                                <p class="category-title">前文：雑誌に</p>
+                                <div class="example-item advanced">
+                                    <span class="example-context">雑誌に</span>
+                                    <span class="example-input">のります</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">載ります</span>
+                                </div>
+                                <div class="example-item advanced">
+                                    <span class="example-context">電車に</span>
+                                    <span class="example-input">のります</span>
+                                    <span class="example-arrow">→</span>
+                                    <span class="example-output">乗ります</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-rules">
+                        <h4>📝 ゲームルール</h4>
+                        <ul class="instructions-list">
+                            <li><span class="rule-icon">🎮</span>ひらがなで表示される文章を入力</li>
+                            <li><span class="rule-icon">⚡</span>一気に最後まで入力（途中確定絶対NG）</li>
+                            <li><span class="rule-icon">✅</span>Enterキーで確定→正解なら次の問題へ</li>
+                            <li><span class="rule-icon">🏆</span>全10問の完了時間とスコアを競おう！</li>
+                        </ul>
+                    </div>
+                </div>
                 <button id="startBtn" class="start-btn">ゲームスタート</button>
+                <div class="ime-link">
+                    <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="ime-article-link">
+                        📚 azooKey on macOSについて詳しく見る
+                    </a>
+                </div>
+                
+                
                 <div class="ranking-preview" id="rankingPreview"></div>
             </div>
         </div>
 
         <div class="game-area" style="display: none;">
-            <div class="status-bar">
-                <div class="progress">
+            <div class="sushi-header">
+                <div class="time-counter">
+                    <span class="time-label">経過時間</span>
+                    <span class="time-value" id="gameTimer">0.0</span>
+                    <span class="time-unit">秒</span>
+                </div>
+                <div class="status-controls">
                     <span class="question-counter">問題: <span id="currentQuestion">1</span> / 10</span>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
+                    <span class="sushi-counter">スコア: <span id="sushiCount">0</span>問</span>
+                    <button id="resetBtn" class="reset-btn">リセット</button>
+                </div>
+            </div>
+
+            <div class="sushi-restaurant">
+                <div class="sushi-counter-top">
+                    <div class="sushi-belt">
+                        <div class="belt-track">
+                            <div class="sushi-item" id="sushiItem"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="timer-display">
-                    <span class="timer-label">経過時間:</span>
-                    <span id="gameTimer">0.0秒</span>
+                <div class="counter-surface">
+                    <div class="table-items">
+                        <div class="left-items">
+                            <div class="tea-cup">🍵</div>
+                            <div class="chopsticks">🥢</div>
+                            <div class="empty-plate"></div>
+                        </div>
+                        <div class="collected-sushi">
+                            <div class="sushi-collection" id="sushiCollection"></div>
+                        </div>
+                    </div>
                 </div>
-                <button id="resetBtn" class="reset-btn">リセット</button>
             </div>
 
             <div class="question-area">
-                <div class="instruction">
-                    <p>テキストフィールドの続きを入力してください（最終的な結果が正解と一致すれば正解）</p>
-                    <p class="hint">Enterキーで回答を確定します</p>
-                </div>
-                <div class="input-area">
-                    <textarea id="userInput" rows="3" placeholder="例: 雑誌にのります（Enterキーで確定）" autocomplete="off" spellcheck="false"></textarea>
-                </div>
-                <div class="expected-display">
-                    <div class="expected-answer">
-                        <span class="label">期待される結果:</span>
-                        <span id="expectedAnswer">雑誌に載ります</span>
+                <div class="question-card">
+                    <div class="target-text">
+                        <div class="target-label">🎯 変換チャレンジ 🎯</div>
+                        <div class="target-content">
+                            <ruby class="target-ruby">
+                                <span id="expectedAnswer">雑誌に載ります</span>
+                                <rt id="targetReading">ざっしにのります</rt>
+                            </ruby>
+                        </div>
                     </div>
-                    <div class="converted-result" id="convertedResult">
-                        <span class="label">あなたの変換結果:</span>
-                        <span id="userConverted">-</span>
+                    <div class="input-section">
+                        <textarea id="userInput" rows="2" placeholder="ここに入力してEnterで確定" autocomplete="off" spellcheck="false"></textarea>
+                        <div class="input-result">
+                            <span class="result-label">入力結果:</span>
+                            <span id="userConverted">-</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -66,8 +325,215 @@
         </div>
 
         <div class="game-over" id="gameOver">
-            <h2>ゲーム終了！</h2>
-            <button id="restartBtn" class="restart-btn">もう一度プレイ</button>
+            <!-- 結果はJavaScriptで動的に生成 -->
+        </div>
+
+        <!-- いい感じ変換デモ画面 -->
+        <div class="conversion-demo" id="conversionDemo" style="display: none;">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2>🤖 いい感じ変換デモ</h2>
+                    <p class="demo-subtitle">プロンプトに応じてテキストを変換する機能を体験</p>
+                    <button id="closeDemoBtn" class="close-demo-btn">×</button>
+                </div>
+                
+                <div class="demo-content">
+                    <div class="demo-instructions">
+                        <h3>💡 azooKey on macOSでの使い方</h3>
+                        <p>1. テキストエディタで文章を入力<br>
+                        2. 変換したい部分をマウスで選択<br>
+                        3. <strong>Ctrl+S</strong> を押す<br>
+                        4. 表示されるウィンドウでプロンプトを入力<br>
+                        5. 選択した文章が指定した形式に変換されます</p>
+                    </div>
+
+                    <!-- セクション選択 -->
+                    <div class="demo-sections">
+                        <h4>📋 変換例を選択してください</h4>
+                        <div class="section-buttons">
+                            <button class="section-btn active" data-section="english">English変換</button>
+                            <button class="section-btn" data-section="emoji">絵文字デコ</button>
+                            <button class="section-btn" data-section="business">ビジネスメール</button>
+                            <button class="section-btn" data-section="casual">カジュアル変換</button>
+                            <button class="section-btn" data-section="formal">敬語変換</button>
+                        </div>
+                    </div>
+                    
+                    <!-- English変換セクション -->
+                    <div class="demo-section" id="englishSection">
+                        <div class="section-header">
+                            <h5>🌍 English変換</h5>
+                            <p>日本語の文章を英語に変換します</p>
+                        </div>
+                        <div class="conversion-playground">
+                            <div class="input-section">
+                                <label for="englishTextarea">テキストエリア:</label>
+                                <textarea id="englishTextarea" rows="3">私は直希です。よろしくお願いします。</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">選択されたテキスト: なし</span>
+                                    <button class="convert-btn" disabled>変換 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>期待される変換結果:</strong> I am Naoki. Nice to meet you.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 絵文字デコセクション -->
+                    <div class="demo-section" id="emojiSection" style="display: none;">
+                        <div class="section-header">
+                            <h5>😄 絵文字デコ</h5>
+                            <p>文章を絵文字でデコレーションします</p>
+                        </div>
+                        <div class="conversion-playground">
+                            <div class="input-section">
+                                <label for="emojiTextarea">テキストエリア:</label>
+                                <textarea id="emojiTextarea" rows="3">今日はテンション上がるね。頑張ろう！</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">選択されたテキスト: なし</span>
+                                    <button class="convert-btn" disabled>変換 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>期待される変換結果:</strong> 🎉 今日は ✨ テンション 📈 上がるね 😄！💪 頑張ろう 🔥！
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ビジネスメールセクション -->
+                    <div class="demo-section" id="businessSection" style="display: none;">
+                        <div class="section-header">
+                            <h5>💼 ビジネスメール</h5>
+                            <p>カジュアルな文章をビジネス向けに修正します</p>
+                        </div>
+                        <div class="conversion-playground">
+                            <div class="input-section">
+                                <label for="businessTextarea">テキストエリア:</label>
+                                <textarea id="businessTextarea" rows="3">お世話に〜。直希です。資料できたから送るね。</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">選択されたテキスト: なし</span>
+                                    <button class="convert-btn" disabled>変換 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>期待される変換結果:</strong> お世話になっております。直希でございます。資料が完成いたしましたので、送付させていただきます。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- カジュアル変換セクション -->
+                    <div class="demo-section" id="casualSection" style="display: none;">
+                        <div class="section-header">
+                            <h5>😊 カジュアル変換</h5>
+                            <p>堅い文章をカジュアルにします</p>
+                        </div>
+                        <div class="conversion-playground">
+                            <div class="input-section">
+                                <label for="casualTextarea">テキストエリア:</label>
+                                <textarea id="casualTextarea" rows="3">本日はお忙しい中、貴重なお時間をいただき、誠にありがとうございました。</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">選択されたテキスト: なし</span>
+                                    <button class="convert-btn" disabled>変換 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>期待される変換結果:</strong> 今日は忙しい中、時間作ってくれてありがとう！
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 敬語変換セクション -->
+                    <div class="demo-section" id="formalSection" style="display: none;">
+                        <div class="section-header">
+                            <h5>🙏 敬語変換</h5>
+                            <p>普通の文章を敬語にします</p>
+                        </div>
+                        <div class="conversion-playground">
+                            <div class="input-section">
+                                <label for="formalTextarea">テキストエリア:</label>
+                                <textarea id="formalTextarea" rows="3">会議は明日の10時からです。資料を用意してください。</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">選択されたテキスト: なし</span>
+                                    <button class="convert-btn" disabled>変換 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>期待される変換結果:</strong> 会議は明日の10時からでございます。資料をご用意いただけますでしょうか。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-actions">
+                        <button id="backToGameBtn" class="action-btn secondary">ゲームに戻る</button>
+                        <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="action-btn primary">
+                            azooKeyをダウンロード
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- いい感じ変換プロンプトウィンドウ -->
+        <div class="conversion-prompt-window" id="conversionPromptWindow" style="display: none;">
+            <div class="prompt-container">
+                <div class="prompt-header">
+                    <h3>🤖 いい感じ変換</h3>
+                    <button id="closePromptBtn" class="close-prompt-btn">×</button>
+                </div>
+                
+                <div class="prompt-content">
+                    <div class="selected-text-display">
+                        <label>選択されたテキスト:</label>
+                        <div id="selectedTextDisplay" class="selected-text"></div>
+                    </div>
+                    
+                    <div class="prompt-input-section">
+                        <label for="conversionPrompt">変換プロンプト:</label>
+                        <input type="text" id="conversionPrompt" placeholder="例: English, 絵文字でデコって, ビジネスメールとして修正" autocomplete="off">
+                        
+                        <div class="prompt-examples">
+                            <span class="prompt-label">よく使われる例:</span>
+                            <button class="prompt-example-btn" data-prompt="English">English</button>
+                            <button class="prompt-example-btn" data-prompt="絵文字でデコって">絵文字でデコって</button>
+                            <button class="prompt-example-btn" data-prompt="ビジネスメールとして修正">ビジネスメールとして修正</button>
+                            <button class="prompt-example-btn" data-prompt="敬語に変換">敬語に変換</button>
+                            <button class="prompt-example-btn" data-prompt="カジュアルに変換">カジュアルに変換</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-examples-section">
+                        <label>変換例:</label>
+                        <div class="conversion-examples">
+                            <div class="conversion-example">
+                                <div class="example-prompt">English</div>
+                                <div class="example-arrow">→</div>
+                                <div class="example-result">I am Naoki.</div>
+                            </div>
+                            <div class="conversion-example">
+                                <div class="example-prompt">絵文字でデコって</div>
+                                <div class="example-arrow">→</div>
+                                <div class="example-result">🎉 今日は ✨ テンション 📈 上がるね 😄！</div>
+                            </div>
+                            <div class="conversion-example">
+                                <div class="example-prompt">ビジネスメールとして修正</div>
+                                <div class="example-arrow">→</div>
+                                <div class="example-result">お世話になっております。直希でございます。</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ime-instruction">
+                        <p><strong>💡 実際に試すには：</strong><br>
+                        azooKey on macOSをインストールして、任意のテキストエディタで同じ操作を行ってください。</p>
+                    </div>
+                    
+                    <div class="prompt-actions">
+                        <button id="cancelConversionBtn" class="cancel-btn">閉じる</button>
+                        <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="action-btn primary">azooKeyをダウンロード</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
