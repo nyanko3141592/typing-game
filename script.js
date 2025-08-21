@@ -352,13 +352,7 @@ function addSushiToConveyor() {
     sushiPlate.appendChild(sushi);
     sushiPlate.appendChild(plate);
     
-    // 問題番号を追加
-    const questionNumber = sushiItemEl.querySelector('.sushi-question-number');
-    if (questionNumber) {
-        questionNumber.textContent = `${currentQuestionIndex + 1}/10`;
-    }
-    
-    // 既存の寿司要素をクリア（問題番号以外）
+    // 既存の寿司要素をクリア
     const existingPlate = sushiItemEl.querySelector('.sushi-plate');
     if (existingPlate) {
         existingPlate.remove();
@@ -566,7 +560,7 @@ function collectSushi() {
         
         // 既存の寿司の数を取得
         const existingPlates = sushiCollection.querySelectorAll('.collected-plate');
-        const offset = existingPlates.length * 35; // 35pxずつ右にずらす（重なりを少なく）
+        const offset = existingPlates.length * 50; // 50pxずつ右にずらす（大きくなった皿に合わせて調整）
         
         // 位置を設定（右にズレながら適度な間隔で配置）
         collectedPlate.style.left = `${offset}px`;
@@ -579,8 +573,7 @@ function collectSushi() {
             sushiCountEl.textContent = correctCount;
         }
         
-        // 寿司アイテムをクリア（問題番号は保持）
-        const questionNumber = sushiItemEl.querySelector('.sushi-question-number');
+        // 寿司アイテムをクリア
         sushiItemEl.style.animation = 'none';
         const existingPlateEl = sushiItemEl.querySelector('.sushi-plate');
         if (existingPlateEl) {
