@@ -62,10 +62,10 @@ header {
 /* ヒーローセクション */
 .hero-section {
     background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-    border-radius: 20px;
-    padding: 40px;
-    margin-bottom: 30px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
 }
@@ -92,9 +92,9 @@ header {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-size: 3.5rem;
+    font-size: 2.8rem;
     font-weight: 800;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     animation: fadeInUp 0.8s ease-out;
     position: relative;
     z-index: 1;
@@ -121,11 +121,46 @@ header {
     z-index: 1;
 }
 
-.hero-features {
+.hero-buttons {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 15px;
     flex-wrap: wrap;
+}
+
+.hero-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.hero-btn.primary {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+    color: white;
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+.hero-btn.secondary {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+}
+
+.hero-btn.download {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: white;
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+}
+
+.hero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .feature-highlight {
@@ -178,10 +213,180 @@ header {
 /* azooKeyショーケースセクション */
 .azookey-showcase {
     background: white;
-    border-radius: 20px;
-    padding: 40px;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* コンパクトな主要機能セクション */
+.core-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
     margin-bottom: 30px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.core-feature {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.core-feature:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon-large {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.core-feature h3 {
+    color: #2e7d32;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.core-feature p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.mini-example {
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+.mini-example .input {
+    background: #f0f9ff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: #1565c0;
+    font-weight: 500;
+}
+
+.mini-example .old {
+    color: #d32f2f;
+    font-size: 0.75rem;
+}
+
+.mini-example .new {
+    color: #2e7d32;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* コンパクトなフロー */
+.experience-flow-compact {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.experience-flow-compact h3 {
+    color: #2e7d32;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+.flow-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.flow-btn {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.flow-btn.primary {
+    background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+    color: white;
+}
+
+.flow-btn.secondary {
+    background: linear-gradient(135deg, #2196f3 0%, #42a5f5 100%);
+    color: white;
+}
+
+.flow-btn.download {
+    background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+    color: white;
+}
+
+.flow-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.flow-emoji {
+    font-size: 1.2rem;
+    margin-right: 12px;
+}
+
+.flow-text {
+    flex: 1;
+    text-align: left;
+}
+
+/* デモカード用スタイル */
+.demo-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.demo-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.demo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.demo-card h6 {
+    color: #2e7d32;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.prompt-instruction {
+    font-size: 0.8rem;
+    color: #666;
+    background: #f0f9ff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: block;
+    margin-bottom: 8px;
 }
 
 .showcase-header {
@@ -1132,6 +1337,42 @@ header {
     
     .feature-highlight {
         padding: 10px 15px;
+    }
+    
+    /* コンパクトデザインのモバイル対応 */
+    .core-features {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .core-feature {
+        padding: 20px;
+    }
+    
+    .feature-icon-large {
+        font-size: 2rem;
+    }
+    
+    .core-feature h3 {
+        font-size: 1rem;
+    }
+    
+    .mini-example .input {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+    
+    .flow-buttons {
+        gap: 10px;
+    }
+    
+    .flow-btn {
+        padding: 14px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .flow-emoji {
+        font-size: 1rem;
     }
     
     .showcase-features {
@@ -2718,6 +2959,60 @@ h1 {
     padding: 40px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     text-align: center;
+}
+
+.game-intro {
+    margin-bottom: 30px;
+}
+
+.game-intro p {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.conversion-examples {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.conversion-examples .example {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.conversion-examples .example:last-child {
+    margin-bottom: 0;
+}
+
+.demo-examples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.demo-examples .demo-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.demo-examples .demo-card h4 {
+    color: #4caf50;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.demo-examples .demo-card .example {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
 }
 
 .start-content h2 {
