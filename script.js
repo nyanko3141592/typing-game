@@ -352,7 +352,17 @@ function addSushiToConveyor() {
     sushiPlate.appendChild(sushi);
     sushiPlate.appendChild(plate);
     
-    sushiItemEl.innerHTML = '';
+    // 問題番号を追加
+    const questionNumber = sushiItemEl.querySelector('.sushi-question-number');
+    if (questionNumber) {
+        questionNumber.textContent = `${currentQuestionIndex + 1}/10`;
+    }
+    
+    // 既存の寿司要素をクリア（問題番号以外）
+    const existingPlate = sushiItemEl.querySelector('.sushi-plate');
+    if (existingPlate) {
+        existingPlate.remove();
+    }
     sushiItemEl.appendChild(sushiPlate);
     
     // アニメーションをリセット
@@ -553,7 +563,15 @@ function collectSushi() {
         const collectedPlate = document.createElement('div');
         collectedPlate.className = 'collected-plate';
         collectedPlate.textContent = sushiEmoji;
-        collectedPlate.style.animationDelay = '0s';
+        
+        // 既存の寿司の数を取得
+        const existingPlates = sushiCollection.querySelectorAll('.collected-plate');
+        const offset = existingPlates.length * 15; // 15pxずつ右にずらす
+        
+        // 位置を設定（右にズレながら重なる）
+        collectedPlate.style.left = `${offset}px`;
+        collectedPlate.style.zIndex = existingPlates.length + 1;
+        
         sushiCollection.appendChild(collectedPlate);
         
         // スコアカウントを更新
@@ -561,8 +579,13 @@ function collectSushi() {
             sushiCountEl.textContent = correctCount;
         }
         
+        // 寿司アイテムをクリア（問題番号は保持）
+        const questionNumber = sushiItemEl.querySelector('.sushi-question-number');
         sushiItemEl.style.animation = 'none';
-        sushiItemEl.innerHTML = '';
+        const existingPlateEl = sushiItemEl.querySelector('.sushi-plate');
+        if (existingPlateEl) {
+            existingPlateEl.remove();
+        }
     }
 }
 
@@ -967,6 +990,10 @@ function startTypingDemo() {
     // スムーズスクロール
     startScreenEl.scrollIntoView({ behavior: 'smooth' });
 }
+
+// windowオブジェクトに関数を追加
+window.showConversionDemo = showConversionDemo;
+window.startTypingDemo = startTypingDemo;
 
 // ページ読み込み時にショーケースを表示、ゲーム画面を非表示
 function initializePage() {

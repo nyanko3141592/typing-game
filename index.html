@@ -133,8 +133,8 @@
                             <div class="step-number">2</div>
                             <div class="step-content">
                                 <h4>いい感じ変換を試す</h4>
-                                <p>プロンプト変換の便利さを体験</p>
-                                <a href="good-feeling-conversion.html" class="step-btn">いい感じ変換デモ</a>
+                                <p>AIによる自由自在な変換を体験</p>
+                                <button class="step-btn" onclick="showConversionDemo()">いい感じ変換デモ</button>
                             </div>
                         </div>
                         <div class="flow-arrow">→</div>
@@ -334,46 +334,44 @@
                 </div>
             </div>
 
-            <div class="sushi-restaurant">
-                <div class="sushi-counter-top">
+            <div class="game-layout">
+                <!-- 寿司レーン -->
+                <div class="sushi-belt-container">
                     <div class="sushi-belt">
                         <div class="belt-track">
-                            <div class="sushi-item" id="sushiItem"></div>
+                            <div class="sushi-item" id="sushiItem">
+                                <span class="sushi-question-number"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="counter-surface">
-                    <div class="table-items">
-                        <div class="left-items">
-                            <div class="tea-cup">🍵</div>
-                            <div class="chopsticks">🥢</div>
-                            <div class="empty-plate"></div>
-                        </div>
-                        <div class="collected-sushi">
-                            <div class="sushi-collection" id="sushiCollection"></div>
-                        </div>
+                
+                <!-- 問題文 -->
+                <div class="question-display">
+                    <ruby class="target-ruby">
+                        <span id="expectedAnswer">雑誌に載ります</span>
+                        <rt id="targetReading">ざっしにのります</rt>
+                    </ruby>
+                </div>
+                
+                <!-- 茶・箸・取った寿司 -->
+                <div class="items-row">
+                    <div class="tea-cup">🍵</div>
+                    <div class="chopsticks">🥢</div>
+                    <div class="collected-sushi">
+                        <div class="sushi-collection" id="sushiCollection"></div>
                     </div>
                 </div>
-            </div>
-
-            <div class="question-area">
-                <div class="question-card">
-                    <div class="target-text">
-                        <div class="target-label">🎯 変換チャレンジ 🎯</div>
-                        <div class="target-content">
-                            <ruby class="target-ruby">
-                                <span id="expectedAnswer">雑誌に載ります</span>
-                                <rt id="targetReading">ざっしにのります</rt>
-                            </ruby>
-                        </div>
-                    </div>
-                    <div class="input-section">
-                        <textarea id="userInput" rows="2" placeholder="ここに入力してEnterで確定" autocomplete="off" spellcheck="false"></textarea>
-                        <div class="input-result">
-                            <span class="result-label">入力結果:</span>
-                            <span id="userConverted">-</span>
-                        </div>
-                    </div>
+                
+                <!-- 入力フィールド -->
+                <div class="input-field">
+                    <textarea id="userInput" rows="2" placeholder="ここに入力してEnterで確定" autocomplete="off" spellcheck="false"></textarea>
+                </div>
+                
+                <!-- 入力結果 -->
+                <div class="input-result">
+                    <span class="result-label">入力結果:</span>
+                    <span id="userConverted">-</span>
                 </div>
             </div>
 
