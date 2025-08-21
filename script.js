@@ -560,7 +560,7 @@ function collectSushi() {
         
         // 既存の寿司の数を取得
         const existingPlates = sushiCollection.querySelectorAll('.collected-plate');
-        const offset = existingPlates.length * 50; // 50pxずつ右にずらす（大きくなった皿に合わせて調整）
+        const offset = existingPlates.length * 70; // 70pxずつ右にずらす（さらに大きくなった皿に合わせて調整）
         
         // 位置を設定（右にズレながら適度な間隔で配置）
         collectedPlate.style.left = `${offset}px`;
