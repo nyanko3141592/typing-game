@@ -351,9 +351,14 @@
                             <rt id="targetReading">ざっしにのります</rt>
                         </ruby>
                         
-                        <!-- 入力結果を問題文の下に表示 -->
-                        <div class="input-result">
+                        <!-- 入力結果を問題文の下に表示（一旦非表示） -->
+                        <div class="input-result" style="display: none;">
                             <span id="userConverted">-</span>
+                        </div>
+                        
+                        <!-- 入力フィールド -->
+                        <div class="input-field">
+                            <textarea id="userInput" rows="2" placeholder="ここに入力してEnterで確定" autocomplete="off" spellcheck="false"></textarea>
                         </div>
                     </div>
                 </div>
@@ -365,11 +370,6 @@
                     <div class="collected-sushi">
                         <div class="sushi-collection" id="sushiCollection"></div>
                     </div>
-                </div>
-                
-                <!-- 入力フィールド -->
-                <div class="input-field">
-                    <textarea id="userInput" rows="2" placeholder="ここに入力してEnterで確定" autocomplete="off" spellcheck="false"></textarea>
                 </div>
                 
             </div>
