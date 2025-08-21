@@ -12,6 +12,9 @@ let timerInterval = null;
 let isProcessing = false;
 let questionTimer = null;
 let correctCount = 0;
+let totalKeystrokeCount = 0; // 全体のキーストローク数
+let correctKeystrokeCount = 0; // 正しいキーストローク数
+let missKeystrokeCount = 0; // ミスタイプ数
 
 // DOM要素は関数内で取得（初期化後に取得）
 let userConvertedEl, userInputEl, submitBtnEl, expectedAnswerEl, feedbackEl;
@@ -201,6 +204,12 @@ function resetGame() {
     if (questionTimer) {
         clearInterval(questionTimer);
     }
+    
+    // カウンターをリセット
+    totalKeystrokeCount = 0;
+    correctKeystrokeCount = 0;
+    missKeystrokeCount = 0;
+    correctCount = 0;
     // 収集したスコアをクリア
     document.getElementById('sushiCollection').innerHTML = '';
     
@@ -531,6 +540,8 @@ function checkAnswer() {
     if (isCorrect) {
         console.log('正解処理開始');
         correctCount++;
+        // 正解時は入力文字数を正しいキーストロークとしてカウント
+        correctKeystrokeCount += fullText.length;
         clearInterval(questionTimer);
         showFeedback('🍣 ごちそうさま！', 'correct');
         collectSushi();
@@ -541,6 +552,8 @@ function checkAnswer() {
             isProcessing = false;
         }, 1000);
     } else {
+        // 不正解時はミスカウントを増やす
+        missKeystrokeCount += Math.abs(fullText.length - question.fullDisplay.length) || 1;
         userInputEl.focus();
         isProcessing = false;
     }
@@ -704,33 +717,72 @@ function displayResult(score, correct, time) {
     
     const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
     
+    // 寿司打風のスコア計算
+    const courseCost = 10000; // 高級コース
+    const sushiPrice = 100; // 1皿100円
+    const totalEarned = correct * sushiPrice;
+    const profit = totalEarned - courseCost;
+    const kpm = Math.round((totalKeystrokeCount / time) * 60); // Keys per minute
+    const kps = (totalKeystrokeCount / time).toFixed(1); // Keys per second
+    
     const rankingDisplayHTML = `
-        <div class="result-container">
-            <div class="result-header">
-                <div class="completion-badge">
-                    <div class="badge-icon">🎉</div>
-                    <h2 class="completion-title">ゲームクリア！</h2>
-                    <p class="completion-subtitle">お疲れさまでした</p>
-                    <div class="score-display-compact">
-                        <div class="score-value">${score.toFixed(2)}</div>
-                        <div class="score-unit">点</div>
+        <div class="sushida-result-container">
+            <div class="sushida-result-header">
+                <div class="course-info">
+                    <span class="course-name">高級 10,000円コース</span>
+                    <span class="course-difficulty">【速度必須】</span>
+                </div>
+                
+                <div class="main-score">
+                    <div class="score-row">
+                        <span class="score-label">成績</span>
+                        <span class="score-amount">${totalEarned.toLocaleString()}円分のお皿を
+                            ゲット！</span>
                     </div>
-                    <div class="score-breakdown-compact">
-                        <div class="breakdown-item-compact">
-                            <span class="breakdown-icon">🍣</span>
-                            <span class="breakdown-value">${correct}問正解</span>
-                        </div>
-                        <div class="breakdown-item-compact">
-                            <span class="breakdown-icon">⏱️</span>
-                            <span class="breakdown-value">${time.toFixed(2)}秒</span>
-                        </div>
+                    <div class="profit-row ${profit >= 0 ? 'profit-positive' : 'profit-negative'}">
+                        <span class="profit-amount">${profit >= 0 ? '+' : ''}${profit.toLocaleString()}円</span>
+                        <span class="profit-label">${profit >= 0 ? 'お得でした！' : '損してます...'}</span>
                     </div>
                 </div>
             </div>
             
-            <div class="result-content">
+            <div class="sushida-result-content">
+                <div class="sushida-stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">正しく打ったキーの数</div>
+                            <div class="stat-value">${correctKeystrokeCount}</div>
+                            <div class="stat-unit">回</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">平均キータイプ数</div>
+                            <div class="stat-value">${kps}</div>
+                            <div class="stat-unit">回/秒</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">ミスタイプ数</div>
+                            <div class="stat-value">${missKeystrokeCount}</div>
+                            <div class="stat-unit">回</div>
+                        </div>
+                    </div>
+                    
+                    <div class="sushida-details">
+                        <div class="detail-row">
+                            <span class="detail-label">🍣 ランキングを表示</span>
+                            <button class="detail-toggle" id="toggleRankingBtn">▼</button>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">📱 コース選択</span>
+                            <button class="detail-button" id="courseSelectBtn">もう一度</button>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">🐦 Twitterでつぶやく</span>
+                            <button class="detail-button" id="tweetBtn">ツイートする</button>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="ranking-section">
+                <div class="ranking-section" id="rankingSection" style="display: none;">
                     <div class="ranking-header">
                         <h3>🏆 本日のランキング</h3>
                         <p class="ranking-subtitle">毎日0時にリセットされます</p>
@@ -831,14 +883,46 @@ function displayResult(score, correct, time) {
     const updateBtn = document.getElementById('updateNameBtn');
     const nameInput = document.getElementById('playerName');
     const restartBtn = document.getElementById('restartBtn');
+    const toggleRankingBtn = document.getElementById('toggleRankingBtn');
+    const courseSelectBtn = document.getElementById('courseSelectBtn');
+    const tweetBtn = document.getElementById('tweetBtn');
+    const rankingSection = document.getElementById('rankingSection');
     
-    updateBtn.addEventListener('click', () => updatePlayerName());
-    nameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') updatePlayerName();
-    });
-    restartBtn.addEventListener('click', resetGame);
+    if (updateBtn) {
+        updateBtn.addEventListener('click', () => updatePlayerName());
+    }
+    if (nameInput) {
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') updatePlayerName();
+        });
+    }
+    if (restartBtn) {
+        restartBtn.addEventListener('click', resetGame);
+    }
+    if (toggleRankingBtn) {
+        toggleRankingBtn.addEventListener('click', () => {
+            if (rankingSection.style.display === 'none') {
+                rankingSection.style.display = 'block';
+                toggleRankingBtn.textContent = '▲';
+                displayRankings();
+            } else {
+                rankingSection.style.display = 'none';
+                toggleRankingBtn.textContent = '▼';
+            }
+        });
+    }
+    if (courseSelectBtn) {
+        courseSelectBtn.addEventListener('click', resetGame);
+    }
+    if (tweetBtn) {
+        tweetBtn.addEventListener('click', () => {
+            const tweetText = `寿司打風タイピングゲームで${totalEarned.toLocaleString()}円分のお皿をゲット！\n${profit >= 0 ? '+' : ''}${profit.toLocaleString()}円${profit >= 0 ? 'お得でした！' : '損しました...'}\nタイピング速度: ${kps}回/秒\n#azooKey #タイピングゲーム`;
+            const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(window.location.href)}`;
+            window.open(tweetUrl, '_blank');
+        });
+    }
     
-    displayRankings();
+    // ランキングは最初は非表示
 }
 
 function updatePlayerName() {
@@ -1066,6 +1150,11 @@ function setupEventListeners() {
     // 基本的なゲームイベント
     if (userInputEl) {
         userInputEl.addEventListener('keydown', (e) => {
+            // キーストロークをカウント（Enterキー以外）
+            if (gameStarted && e.key !== 'Enter' && e.key.length === 1) {
+                totalKeystrokeCount++;
+            }
+            
             if (e.key === 'Enter') {
                 e.preventDefault();
                 checkAnswer();
