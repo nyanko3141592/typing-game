@@ -121,6 +121,62 @@ header {
     z-index: 1;
 }
 
+/* 機能概要セクション */
+.features-overview {
+    margin-bottom: 25px;
+    position: relative;
+    z-index: 1;
+}
+
+.feature-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(76, 175, 80, 0.1);
+    min-width: 160px;
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.feature-text strong {
+    font-size: 0.9rem;
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.feature-text span {
+    font-size: 0.75rem;
+    color: #666;
+    line-height: 1.2;
+}
+
 /* デモハイライトセクション */
 .demo-highlight {
     background: rgba(76, 175, 80, 0.05);
@@ -1371,6 +1427,32 @@ header {
     
     .feature-highlight {
         padding: 10px 15px;
+    }
+    
+    /* 新機能カードのモバイル対応 */
+    .feature-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .feature-item {
+        min-width: 280px;
+        padding: 12px 16px;
+    }
+    
+    .feature-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1.3rem;
+    }
+    
+    .feature-text strong {
+        font-size: 0.85rem;
+    }
+    
+    .feature-text span {
+        font-size: 0.7rem;
     }
     
     /* コンパクトデザインのモバイル対応 */
