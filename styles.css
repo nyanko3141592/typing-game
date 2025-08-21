@@ -324,6 +324,67 @@ header {
     padding: 15px;
 }
 
+.conversion-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.conversion-feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.conversion-feature .feature-emoji {
+    font-size: 1.3rem;
+}
+
+.conversion-feature .feature-desc {
+    color: #555;
+    flex: 1;
+}
+
+.conversion-example-compact {
+    background: linear-gradient(135deg, #e3f2fd 0%, #e1f5fe 100%);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+.example-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.example-row .input {
+    color: #333;
+    font-weight: 500;
+}
+
+.example-row .prompt-tag {
+    background: #2196f3;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.example-row .arrow {
+    color: #999;
+}
+
+.example-row .output {
+    font-size: 1.2rem;
+}
+
 .conversion-item {
     display: flex;
     flex-direction: column;

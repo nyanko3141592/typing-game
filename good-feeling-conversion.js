@@ -11,7 +11,9 @@ document.addEventListener('keydown', (e) => {
         const activeElement = document.activeElement;
         if (activeElement && activeElement.classList.contains('demo-textarea')) {
             const selectedText = activeElement.value.substring(activeElement.selectionStart, activeElement.selectionEnd);
-            if (selectedText) {
+            
+            // 文章補完機能: 選択テキストがない場合も反応
+            if (selectedText || isCompletionTextarea(activeElement)) {
                 // テキストエリアの境界線を一時的に緑色にしてフィードバック
                 activeElement.style.borderColor = '#4caf50';
                 activeElement.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.5)';
@@ -26,6 +28,12 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// 文章補完用のテキストエリアかどうかを判定
+function isCompletionTextarea(textarea) {
+    const placeholder = textarea.placeholder;
+    return placeholder && placeholder.includes('カーソル位置で');
+}
+
 // 各テキストエリアにCtrl+Sイベントリスナーを追加（重複だが確実性のため）
 textareas.forEach(textarea => {
     textarea.addEventListener('keydown', (e) => {
@@ -34,7 +42,9 @@ textareas.forEach(textarea => {
             e.stopPropagation();
             
             const selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-            if (selectedText) {
+            
+            // 選択テキストがあるか、文章補完用のテキストエリアの場合
+            if (selectedText || isCompletionTextarea(textarea)) {
                 // テキストエリアの境界線を一時的に緑色にしてフィードバック
                 textarea.style.borderColor = '#4caf50';
                 textarea.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.5)';

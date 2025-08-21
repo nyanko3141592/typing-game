@@ -83,24 +83,34 @@
                     
                     <div class="showcase-feature-card">
                         <div class="feature-card-header">
-                            <h3>🤖 いい感じ変換</h3>
+                            <h3>🤖 いい感じ変換（Ctrl+S）</h3>
                         </div>
                         <div class="feature-card-content">
-                            <p>選択したテキストをCtrl+Sで自由自在に変換。翻訳、要約、文体変更など何でも可能</p>
-                            <div class="conversion-preview">
-                                <div class="conversion-item">
-                                    <div class="conversion-step">
-                                        <span class="step-label">1. テキスト選択:</span>
-                                        <span class="original">今日は疲れた</span>
-                                    </div>
-                                    <div class="conversion-step">
-                                        <span class="step-label">2. プロンプト:</span>
-                                        <span class="prompt">English</span>
-                                    </div>
-                                    <div class="conversion-step">
-                                        <span class="step-label">3. 結果:</span>
-                                        <span class="result">I'm tired today</span>
-                                    </div>
+                            <p>選択したテキストをCtrl+Sで自由自在に変換。LLMの力で何でも可能に</p>
+                            <div class="conversion-features">
+                                <div class="conversion-feature">
+                                    <span class="feature-emoji">🌍</span>
+                                    <span class="feature-desc">翻訳: 日本語→英語など自由に</span>
+                                </div>
+                                <div class="conversion-feature">
+                                    <span class="feature-emoji">🎭</span>
+                                    <span class="feature-desc">文脈絵文字: 意味を理解した絵文字提案</span>
+                                </div>
+                                <div class="conversion-feature">
+                                    <span class="feature-emoji">✨</span>
+                                    <span class="feature-desc">文章補完: AIが続きを自動生成</span>
+                                </div>
+                                <div class="conversion-feature">
+                                    <span class="feature-emoji">💼</span>
+                                    <span class="feature-desc">文体変換: ビジネス/カジュアル/敬語</span>
+                                </div>
+                            </div>
+                            <div class="conversion-example-compact">
+                                <div class="example-row">
+                                    <span class="input">中華料理はおいしい</span>
+                                    <span class="prompt-tag">えもじ</span>
+                                    <span class="arrow">→</span>
+                                    <span class="output">🥡🥟🍜</span>
                                 </div>
                             </div>
                         </div>
@@ -402,6 +412,8 @@
                             <button class="section-btn" data-section="business">ビジネスメール</button>
                             <button class="section-btn" data-section="casual">カジュアル変換</button>
                             <button class="section-btn" data-section="formal">敬語変換</button>
+                            <button class="section-btn" data-section="context-emoji">文脈絵文字</button>
+                            <button class="section-btn" data-section="completion">文章補完</button>
                         </div>
                     </div>
                     
@@ -506,6 +518,78 @@
                             </div>
                             <div class="expected-result">
                                 <strong>期待される変換結果:</strong> 会議は明日の10時からでございます。資料をご用意いただけますでしょうか。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 文脈絵文字セクション -->
+                    <div class="demo-section" id="context-emojiSection" style="display: none;">
+                        <div class="section-header">
+                            <h5>🎭 文脈を理解した絵文字変換</h5>
+                            <p>文章の意味を理解して適切な絵文字を提案</p>
+                        </div>
+                        <div class="conversion-playground">
+                            <div class="input-section">
+                                <label for="contextEmojiTextarea">テキストエリア:</label>
+                                <textarea id="contextEmojiTextarea" rows="3">中華料理はおいしい</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">選択されたテキスト: なし</span>
+                                    <button class="convert-btn" disabled>変換 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>プロンプト「えもじ」での変換結果:</strong> 中華料理はおいしい 🥡🥟🍜
+                                <br><span style="color: #666; font-size: 0.9em;">※文脈を理解して中華料理関連の絵文字を提案</span>
+                            </div>
+                        </div>
+                        <div class="conversion-playground" style="margin-top: 20px;">
+                            <div class="input-section">
+                                <label for="contextEmojiTextarea2">別の例:</label>
+                                <textarea id="contextEmojiTextarea2" rows="3">猫がいなくなっちゃった</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">選択されたテキスト: なし</span>
+                                    <button class="convert-btn" disabled>変換 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>プロンプト「えもじ」での変換結果:</strong> 猫がいなくなっちゃった 😢😭🐈
+                                <br><span style="color: #666; font-size: 0.9em;">※感情を理解して悲しみの絵文字を提案</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 文章補完セクション -->
+                    <div class="demo-section" id="completionSection" style="display: none;">
+                        <div class="section-header">
+                            <h5>✨ AI文章補完</h5>
+                            <p>文章の続きをAIが自動で補完</p>
+                        </div>
+                        <div class="conversion-playground">
+                            <div class="input-section">
+                                <label for="completionTextarea">テキストエリア:</label>
+                                <textarea id="completionTextarea" rows="3">猫は</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">カーソル位置で Ctrl+S（選択不要）</span>
+                                    <button class="convert-btn">補完 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>補完結果:</strong> 猫はとてもかわいい動物です。
+                                <br><span style="color: #666; font-size: 0.9em;">※文末で何も選択せずにCtrl+Sで文章を補完</span>
+                            </div>
+                        </div>
+                        <div class="conversion-playground" style="margin-top: 20px;">
+                            <div class="input-section">
+                                <label for="completionTextarea2">別の例:</label>
+                                <textarea id="completionTextarea2" rows="3">今日の天気は</textarea>
+                                <div class="selection-info">
+                                    <span class="selection-display">カーソル位置で Ctrl+S（選択不要）</span>
+                                    <button class="convert-btn">補完 (Ctrl+S)</button>
+                                </div>
+                            </div>
+                            <div class="expected-result">
+                                <strong>補完結果:</strong> 今日の天気は晴れていて、とても気持ちがいいです。
+                                <br><span style="color: #666; font-size: 0.9em;">※文脈に応じた自然な文章を生成</span>
                             </div>
                         </div>
                     </div>

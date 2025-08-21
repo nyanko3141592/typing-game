@@ -1028,7 +1028,9 @@ function initializeElements() {
         emoji: document.getElementById('emojiTextarea'),
         business: document.getElementById('businessTextarea'),
         casual: document.getElementById('casualTextarea'),
-        formal: document.getElementById('formalTextarea')
+        formal: document.getElementById('formalTextarea'),
+        'context-emoji': document.getElementById('contextEmojiTextarea'),
+        completion: document.getElementById('completionTextarea')
     };
     
     if (textareas.english) {

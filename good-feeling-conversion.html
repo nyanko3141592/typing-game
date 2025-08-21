@@ -90,10 +90,52 @@
             counter-reset: step-counter;
         }
         
+        /* セクションヘッダー */
+        .section-header {
+            background: linear-gradient(135deg, #fff3e0 0%, #e3f2fd 100%);
+            border: 2px solid #ff9800;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0 30px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 40%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 152, 0, 0.1) 0%, transparent 70%);
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .section-title {
+            color: #e65100;
+            font-size: 2.2rem;
+            margin: 0 0 15px 0;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-description {
+            color: #666;
+            font-size: 1.1rem;
+            margin: 0;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
         .conversion-cards {
             display: flex;
             flex-direction: column;
             gap: 25px;
+            margin-bottom: 40px;
         }
         
         .conversion-card {
@@ -422,12 +464,137 @@
                 </div>
             </div>
             
+            <!-- セクション1: 文脈絵文字変換 -->
+            <div class="section-header">
+                <h2 class="section-title">🎭 変換：文脈を理解した絵文字</h2>
+                <p class="section-description">AIが文章の意味を理解して、文脈に適した絵文字を提案します</p>
+            </div>
+            
             <div class="conversion-cards">
-                <!-- English変換カード -->
                 <div class="conversion-card">
                     <div class="card-header">
-                        <h2>🌍 English変換</h2>
-                        <p class="card-description">日本語の文章を英語に変換します</p>
+                        <h2>🍜 中華料理の文脈</h2>
+                        <p class="card-description">料理の種類を理解して関連絵文字を提案</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="変換プロンプト: えもじ">中華料理はおいしい</textarea>
+                        </div>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-content original-text">中華料理はおいしい</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. プロンプト:</span>
+                                <span class="step-content prompt-text">えもじ</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 結果:</span>
+                                <span class="step-content result-text">中華料理はおいしい 🥡🥟🍜</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>😢 感情の文脈</h2>
+                        <p class="card-description">文章の感情を理解して適切な絵文字を提案</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="変換プロンプト: えもじ">猫がいなくなっちゃった</textarea>
+                        </div>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-content original-text">猫がいなくなっちゃった</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. プロンプト:</span>
+                                <span class="step-content prompt-text">えもじ</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 結果:</span>
+                                <span class="step-content result-text">猫がいなくなっちゃった 😢😭🐈</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- セクション2: 文章補完 -->
+            <div class="section-header">
+                <h2 class="section-title">✨ 補完：AI文章補完</h2>
+                <p class="section-description">テキスト選択不要！カーソル位置でCtrl+Sを押すだけで文章を自動補完</p>
+            </div>
+            
+            <div class="conversion-cards">
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>🌺 知識の補完</h2>
+                        <p class="card-description">一般常識や知識を自動で補完</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="カーソル位置でCtrl+S（選択不要）">母の日の花といえば</textarea>
+                        </div>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. カーソル位置:</span>
+                                <span class="step-content original-text">母の日の花といえば|（カーソル）</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. 操作:</span>
+                                <span class="step-content prompt-text">Ctrl+S（選択せずに押す）</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 補完結果:</span>
+                                <span class="step-content result-text">母の日の花といえばカーネーションが定番ですね。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>🧮 計算の補完</h2>
+                        <p class="card-description">数学の計算結果を自動補完</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="demo-playground">
+                            <textarea class="demo-textarea" placeholder="カーソル位置でCtrl+S（選択不要）">12 * 13 = </textarea>
+                        </div>
+                        <div class="conversion-process">
+                            <div class="process-step">
+                                <span class="step-label">1. カーソル位置:</span>
+                                <span class="step-content original-text">12 * 13 = |（カーソル）</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">2. 操作:</span>
+                                <span class="step-content prompt-text">Ctrl+S（選択せずに押す）</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="step-label">3. 補完結果:</span>
+                                <span class="step-content result-text">12 * 13 = 156</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- セクション3: 選択範囲変換 -->
+            <div class="section-header">
+                <h2 class="section-title">🔄 選択範囲変換：プロンプトで自在に変換</h2>
+                <p class="section-description">テキストを選択してCtrl+S、プロンプトで思いのままに変換</p>
+            </div>
+            
+            <div class="conversion-cards">
+                <div class="conversion-card">
+                    <div class="card-header">
+                        <h2>🌍 翻訳変換</h2>
+                        <p class="card-description">日本語から英語への翻訳</p>
                     </div>
                     <div class="card-content">
                         <div class="demo-playground">
@@ -450,11 +617,10 @@
                     </div>
                 </div>
                 
-                <!-- 絵文字デコカード -->
                 <div class="conversion-card">
                     <div class="card-header">
-                        <h2>😄 絵文字デコ</h2>
-                        <p class="card-description">文章を絵文字でデコレーションします</p>
+                        <h2>😄 絵文字デコレーション</h2>
+                        <p class="card-description">文章全体を絵文字でデコレーション</p>
                     </div>
                     <div class="card-content">
                         <div class="demo-playground">
@@ -477,11 +643,10 @@
                     </div>
                 </div>
                 
-                <!-- ビジネスメールカード -->
                 <div class="conversion-card">
                     <div class="card-header">
-                        <h2>💼 ビジネスメール</h2>
-                        <p class="card-description">カジュアルな文章をビジネス向けに修正します</p>
+                        <h2>💼 文体変換（ビジネス）</h2>
+                        <p class="card-description">カジュアルな文章をビジネス向けに</p>
                     </div>
                     <div class="card-content">
                         <div class="demo-playground">
@@ -504,47 +669,19 @@
                     </div>
                 </div>
                 
-                <!-- カジュアル変換カード -->
                 <div class="conversion-card">
                     <div class="card-header">
-                        <h2>😊 カジュアル変換</h2>
-                        <p class="card-description">堅い文章をカジュアルにします</p>
+                        <h2>🙏 文体変換（敬語）</h2>
+                        <p class="card-description">カジュアルな文章を敬語に</p>
                     </div>
                     <div class="card-content">
                         <div class="demo-playground">
-                            <textarea class="demo-textarea" placeholder="変換プロンプト: カジュアルに変換">本日はお忙しい中、貴重なお時間をいただき、誠にありがとうございました。</textarea>
+                            <textarea class="demo-textarea" placeholder="変換プロンプト: 敬語に変換">明日10時から会議だから資料よろしく</textarea>
                         </div>
                         <div class="conversion-process">
                             <div class="process-step">
                                 <span class="step-label">1. テキスト選択:</span>
-                                <span class="step-content original-text">本日はお忙しい中、貴重なお時間をいただき、誠にありがとうございました。</span>
-                            </div>
-                            <div class="process-step">
-                                <span class="step-label">2. プロンプト:</span>
-                                <span class="step-content prompt-text">カジュアルに変換</span>
-                            </div>
-                            <div class="process-step">
-                                <span class="step-label">3. 結果:</span>
-                                <span class="step-content result-text">今日は忙しい中、時間作ってくれてありがとう！</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 敬語変換カード -->
-                <div class="conversion-card">
-                    <div class="card-header">
-                        <h2>🙏 敬語変換</h2>
-                        <p class="card-description">普通の文章を敬語にします</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="demo-playground">
-                            <textarea class="demo-textarea" placeholder="変換プロンプト: 敬語に変換">会議は明日の10時からです。資料を用意してください。</textarea>
-                        </div>
-                        <div class="conversion-process">
-                            <div class="process-step">
-                                <span class="step-label">1. テキスト選択:</span>
-                                <span class="step-content original-text">会議は明日の10時からです。資料を用意してください。</span>
+                                <span class="step-content original-text">明日10時から会議だから資料よろしく</span>
                             </div>
                             <div class="process-step">
                                 <span class="step-label">2. プロンプト:</span>
@@ -552,7 +689,7 @@
                             </div>
                             <div class="process-step">
                                 <span class="step-label">3. 結果:</span>
-                                <span class="step-content result-text">会議は明日の10時からでございます。資料をご用意いただけますでしょうか。</span>
+                                <span class="step-content result-text">明日の10時より会議を開催いたします。資料のご準備をお願いいたします。</span>
                             </div>
                         </div>
                     </div>
