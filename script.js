@@ -711,36 +711,24 @@ function displayResult(score, correct, time) {
                     <div class="badge-icon">🎉</div>
                     <h2 class="completion-title">ゲームクリア！</h2>
                     <p class="completion-subtitle">お疲れさまでした</p>
+                    <div class="score-display-compact">
+                        <div class="score-value">${score.toFixed(2)}</div>
+                        <div class="score-unit">点</div>
+                    </div>
+                    <div class="score-breakdown-compact">
+                        <div class="breakdown-item-compact">
+                            <span class="breakdown-icon">🍣</span>
+                            <span class="breakdown-value">${correct}問正解</span>
+                        </div>
+                        <div class="breakdown-item-compact">
+                            <span class="breakdown-icon">⏱️</span>
+                            <span class="breakdown-value">${time.toFixed(2)}秒</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <div class="result-content">
-                <div class="score-section">
-                    <div class="main-score-card">
-                        <div class="score-header">
-                            <h3>🍣 あなたの結果</h3>
-                        </div>
-                        <div class="score-display">
-                            <div class="score-value">${score.toFixed(2)}</div>
-                            <div class="score-unit">点</div>
-                        </div>
-                        <div class="score-breakdown">
-                            <div class="breakdown-item">
-                                <span class="breakdown-icon">🍣</span>
-                                <span class="breakdown-label">正解問題数</span>
-                                <span class="breakdown-value">${correct}問</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span class="breakdown-icon">⏱️</span>
-                                <span class="breakdown-label">クリア時間</span>
-                                <span class="breakdown-value">${time.toFixed(2)}秒</span>
-                            </div>
-                        </div>
-                        <div class="score-formula">
-                            <p>スコア計算: 100 - タイム + (正解数 × 10)</p>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="ranking-section">
                     <div class="ranking-header">
@@ -762,13 +750,12 @@ function displayResult(score, correct, time) {
                 <div class="next-experience-section">
                     <div class="tour-divider">
                         <div class="divider-line"></div>
-                        <div class="divider-text">🎯 次の体験</div>
+                        <div class="divider-text">🎯 次のステップ</div>
                         <div class="divider-line"></div>
                     </div>
                     
                     <div class="next-feature-card">
                         <div class="feature-header">
-                            <div class="feature-badge">NEXT STEP</div>
                             <h4>🤖 いい感じ変換を体験しよう</h4>
                             <p class="feature-subtitle">LLMと接続した賢い変換機能</p>
                         </div>

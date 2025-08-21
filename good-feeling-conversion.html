@@ -449,49 +449,49 @@
                 <h1>🤖 いい感じ変換デモ</h1>
                 <p class="page-subtitle">
                     azooKey on macOSの「いい感じ変換」機能を体験してみましょう！<br>
-                    テキストを選択してCtrl+Sで、プロンプトに応じて文章を変換できます。
+                    任意のテキストをAIがいい感じに変換。従来のスペースキーの代わりにCtrl+Sで発動します。
                 </p>
                 
                 <div class="how-to-use">
                     <h3>💡 azooKey on macOSでの使い方</h3>
                     <ol class="how-to-steps">
-                        <li>テキストエディタで文章を入力</li>
-                        <li>変換したい部分をマウスで選択</li>
-                        <li><strong>Ctrl+S</strong> を押す</li>
-                        <li>表示されるウィンドウでプロンプトを入力</li>
-                        <li>選択した文章が指定した形式に変換されます</li>
+                        <li>テキストエディタで任意の文章を入力</li>
+                        <li>変換したい内容（「えもじ」「きごう」等）を入力、または文章を選択</li>
+                        <li>スペースの代わりに<strong>Ctrl+S</strong>を押す</li>
+                        <li>AIが文脈を読んで適切な候補を複数表示</li>
+                        <li>候補から最適なものを選択して変換完了</li>
                     </ol>
                 </div>
             </div>
             
-            <!-- セクション1: 文脈絵文字変換 -->
+            <!-- セクション1: いい感じ変換（標準的な使い方） -->
             <div class="section-header">
-                <h2 class="section-title">🎭 変換：文脈を理解した絵文字</h2>
-                <p class="section-description">AIが文章の意味を理解して、文脈に適した絵文字を提案します</p>
+                <h2 class="section-title">🎭 変換：スペースの代わりにCtrl+S</h2>
+                <p class="section-description">従来の変換のスペースの代わりにCtrl+Sで発動。AIが文脈を読んで適切な変換候補を複数提案します</p>
             </div>
             
             <div class="conversion-cards">
                 <div class="conversion-card">
                     <div class="card-header">
-                        <h2>🍜 中華料理の文脈</h2>
-                        <p class="card-description">料理の種類を理解して関連絵文字を提案</p>
+                        <h2>🍜 中華料理の文脈で絵文字変換</h2>
+                        <p class="card-description">文脈がある状態で「えもじ」と入力してCtrl+S → 文脈に応じた絵文字候補が提案される</p>
                     </div>
                     <div class="card-content">
                         <div class="demo-playground">
-                            <textarea class="demo-textarea" placeholder="変換プロンプト: えもじ">中華料理はおいしい</textarea>
+                            <textarea class="demo-textarea" placeholder="文脈の後に「えもじ」と入力してCtrl+S">中華料理はおいしい</textarea>
                         </div>
                         <div class="conversion-process">
                             <div class="process-step">
-                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-label">1. 文脈入力:</span>
                                 <span class="step-content original-text">中華料理はおいしい</span>
                             </div>
                             <div class="process-step">
-                                <span class="step-label">2. プロンプト:</span>
-                                <span class="step-content prompt-text">えもじ</span>
+                                <span class="step-label">2. 変換語入力:</span>
+                                <span class="step-content prompt-text">えもじ（ユーザーが入力）</span>
                             </div>
                             <div class="process-step">
-                                <span class="step-label">3. 結果:</span>
-                                <span class="step-content result-text">中華料理はおいしい 🥡🥟🍜</span>
+                                <span class="step-label">3. 操作・結果:</span>
+                                <span class="step-content result-text">Ctrl+S → 🥡 / 🥟 / 🍜（複数候補）</span>
                             </div>
                         </div>
                     </div>
@@ -499,25 +499,25 @@
                 
                 <div class="conversion-card">
                     <div class="card-header">
-                        <h2>😢 感情の文脈</h2>
-                        <p class="card-description">文章の感情を理解して適切な絵文字を提案</p>
+                        <h2>😢 感情の文脈で絵文字変換</h2>
+                        <p class="card-description">非自明な感情も予想して適切な絵文字を提案</p>
                     </div>
                     <div class="card-content">
                         <div class="demo-playground">
-                            <textarea class="demo-textarea" placeholder="変換プロンプト: えもじ">猫がいなくなっちゃった</textarea>
+                            <textarea class="demo-textarea" placeholder="文脈の後に「えもじ」と入力してCtrl+S">猫がいなくなっちゃった</textarea>
                         </div>
                         <div class="conversion-process">
                             <div class="process-step">
-                                <span class="step-label">1. テキスト選択:</span>
+                                <span class="step-label">1. 文脈入力:</span>
                                 <span class="step-content original-text">猫がいなくなっちゃった</span>
                             </div>
                             <div class="process-step">
-                                <span class="step-label">2. プロンプト:</span>
-                                <span class="step-content prompt-text">えもじ</span>
+                                <span class="step-label">2. 変換語入力:</span>
+                                <span class="step-content prompt-text">えもじ（ユーザーが入力）</span>
                             </div>
                             <div class="process-step">
-                                <span class="step-label">3. 結果:</span>
-                                <span class="step-content result-text">猫がいなくなっちゃった 😢😭🐈</span>
+                                <span class="step-label">3. 操作・結果:</span>
+                                <span class="step-content result-text">Ctrl+S → 😢 / 😭 / 🐈（複数候補）</span>
                             </div>
                         </div>
                     </div>
@@ -526,8 +526,8 @@
             
             <!-- セクション2: 文章補完 -->
             <div class="section-header">
-                <h2 class="section-title">✨ 補完：AI文章補完</h2>
-                <p class="section-description">テキスト選択不要！カーソル位置でCtrl+Sを押すだけで文章を自動補完</p>
+                <h2 class="section-title">✨ 補完：文章の続きを自動生成</h2>
+                <p class="section-description">文章の最後に何も入力しないでCtrl+Sを押すと続きを補完します</p>
             </div>
             
             <div class="conversion-cards">
@@ -542,16 +542,16 @@
                         </div>
                         <div class="conversion-process">
                             <div class="process-step">
-                                <span class="step-label">1. カーソル位置:</span>
-                                <span class="step-content original-text">母の日の花といえば|（カーソル）</span>
+                                <span class="step-label">1. 入力:</span>
+                                <span class="step-content original-text">母の日の花といえば</span>
                             </div>
                             <div class="process-step">
                                 <span class="step-label">2. 操作:</span>
-                                <span class="step-content prompt-text">Ctrl+S（選択せずに押す）</span>
+                                <span class="step-content prompt-text">文末でCtrl+S（何も入力せずに）</span>
                             </div>
                             <div class="process-step">
                                 <span class="step-label">3. 補完結果:</span>
-                                <span class="step-content result-text">母の日の花といえばカーネーションが定番ですね。</span>
+                                <span class="step-content result-text">→ カーネーションが定番ですね。</span>
                             </div>
                         </div>
                     </div>
@@ -568,16 +568,16 @@
                         </div>
                         <div class="conversion-process">
                             <div class="process-step">
-                                <span class="step-label">1. カーソル位置:</span>
-                                <span class="step-content original-text">12 * 13 = |（カーソル）</span>
+                                <span class="step-label">1. 入力:</span>
+                                <span class="step-content original-text">12 * 13 = </span>
                             </div>
                             <div class="process-step">
                                 <span class="step-label">2. 操作:</span>
-                                <span class="step-content prompt-text">Ctrl+S（選択せずに押す）</span>
+                                <span class="step-content prompt-text">文末でCtrl+S（何も入力せずに）</span>
                             </div>
                             <div class="process-step">
                                 <span class="step-label">3. 補完結果:</span>
-                                <span class="step-content result-text">12 * 13 = 156</span>
+                                <span class="step-content result-text">→ 156</span>
                             </div>
                         </div>
                     </div>
@@ -701,23 +701,23 @@
                 <div class="completion-card">
                     <h2>🎉 azooKey on macOSの体験完了！</h2>
                     <p class="completion-text">
-                        お疲れさまでした！文脈変換といい感じ変換、<br>
-                        azooKeyの2大機能を体験していただきました。
+                        お疲れさまでした！いい感じ変換の3つの機能を<br>
+                        すべて体験していただきました。
                     </p>
                     
                     <div class="experience-summary">
                         <div class="summary-item">
                             <div class="summary-icon">✅</div>
                             <div class="summary-content">
-                                <h4>ライブ変換を体験</h4>
-                                <p>文脈を理解した高精度変換</p>
+                                <h4>変換機能を体験</h4>
+                                <p>スペースの代わりにCtrl+Sで文脈を読んだ変換</p>
                             </div>
                         </div>
                         <div class="summary-item">
                             <div class="summary-icon">✅</div>
                             <div class="summary-content">
-                                <h4>いい感じ変換を体験</h4>
-                                <p>プロンプトによる自在な文章変換</p>
+                                <h4>補完・選択範囲変換を体験</h4>
+                                <p>文章補完とプロンプトによる自在な変換</p>
                             </div>
                         </div>
                     </div>
