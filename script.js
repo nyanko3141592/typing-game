@@ -558,13 +558,7 @@ function collectSushi() {
         collectedPlate.className = 'collected-plate';
         collectedPlate.textContent = sushiEmoji;
         
-        // 既存の寿司の数を取得
-        const existingPlates = sushiCollection.querySelectorAll('.collected-plate');
-        const offset = existingPlates.length * 70; // 70pxずつ右にずらす（さらに大きくなった皿に合わせて調整）
-        
-        // 位置を設定（右にズレながら適度な間隔で配置）
-        collectedPlate.style.left = `${offset}px`;
-        collectedPlate.style.zIndex = existingPlates.length + 1;
+        // Flexboxで自然に横並びにする（位置指定不要）
         
         sushiCollection.appendChild(collectedPlate);
         
