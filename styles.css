@@ -2085,10 +2085,11 @@ h1 {
 }
 
 .result-header {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
     color: white;
     padding: 30px;
     text-align: center;
+    box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
 }
 
 .completion-badge {
@@ -2113,6 +2114,7 @@ h1 {
     font-size: 2rem;
     margin: 0;
     font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .completion-subtitle {

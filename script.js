@@ -700,11 +700,7 @@ function displayResult(score, correct, time) {
     gameAreaEl.style.display = 'none';
     gameOverEl.classList.add('show');
     
-    // ヘッダーを再表示
-    const headerEl = document.querySelector('header');
-    if (headerEl) {
-        headerEl.style.display = 'block';
-    }
+    // ヘッダーは結果画面では非表示のまま
     
     const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
     
