@@ -10,11 +10,18 @@
     <div class="container">
         <header>
             <div class="hero-section">
-                <h1>🚀 azooKey on macOS</h1>
-                <p class="hero-subtitle">AI搭載・文脈理解型の次世代日本語IME</p>
+                <h1>🚀 azooKey IME</h1>
+                <p class="hero-subtitle">AIが文脈を理解する次世代日本語IME</p>
+                <div class="demo-highlight">
+                    <p class="demo-description">同音異義語も文脈で完璧判別。実際の変換精度を体験してみてください。</p>
+                    <div class="conversion-examples-mini">
+                        <span class="example-mini">猫を「かう」→<strong>飼う</strong></span>
+                        <span class="example-mini">リンゴを「かう」→<strong>買う</strong></span>
+                    </div>
+                </div>
                 <div class="hero-buttons">
-                    <button class="hero-btn primary" onclick="startTypingDemo()">🎮 タイピングゲーム体験</button>
-                    <button class="hero-btn secondary" onclick="showConversionDemo()">🤖 いい感じ変換デモ</button>
+                    <button class="hero-btn primary" onclick="startTypingDemo()">🎮 変換精度を体験する</button>
+                    <button class="hero-btn secondary" onclick="showConversionDemo()">🤖 AI変換デモ</button>
                     <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="hero-btn download">📦 ダウンロード</a>
                 </div>
             </div>
@@ -22,25 +29,26 @@
 
         <div class="start-screen" id="startScreen">
             <div class="start-content">
-                <h2>🎮 azooKey変換精度を体験</h2>
+                <h2>🎯 文脈変換チャレンジ</h2>
                 <div class="game-intro">
-                    <p>AIが文脈を理解し、同音異義語も完璧に判別。スペース不要のライブ変換を体験してください。</p>
+                    <p class="intro-text">AIが文脈を読んで適切に変換。10問で精度を実感してください。</p>
                     
-                    <div class="conversion-examples">
-                        <div class="example">猫を「かう」→<strong>飼う</strong> / リンゴを「かう」→<strong>買う</strong></div>
-                        <div class="example">雑誌に「のります」→<strong>載ります</strong> / 電車に「のります」→<strong>乗ります</strong></div>
-                    </div>
-                    
-                    <div class="game-rules">
-                        <h4>📝 ルール</h4>
-                        <ul>
-                            <li>画面の文章をひらがなで入力</li>
-                            <li>スペース不要、一気に入力してEnter</li>
-                            <li>10問クリアでタイム計測</li>
-                        </ul>
+                    <div class="game-rules-compact">
+                        <div class="rule-item">
+                            <span class="rule-icon">⌨️</span>
+                            <span>ひらがなで入力→Enter</span>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">⚡</span>
+                            <span>スペース不要で一気に</span>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">🎯</span>
+                            <span>10問でタイム計測</span>
+                        </div>
                     </div>
                 </div>
-                <button id="startBtn" class="start-btn">ゲームスタート</button>
+                <button id="startBtn" class="start-btn">挑戦してみる</button>
                 <div class="ranking-preview" id="rankingPreview"></div>
             </div>
         </div>
