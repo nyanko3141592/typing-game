@@ -4232,3 +4232,337 @@ h1 {
         font-size: 1.2rem;
     }
 }
+
+/* 新しいリザルト画面のスタイル */
+.conversion-examples-section {
+    margin-top: 20px;
+}
+
+.conversion-example-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.example-type {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+}
+
+.conversion-example-row .input {
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    flex: 1;
+}
+
+.conversion-example-row .prompt-tag {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.conversion-example-row .output {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    flex: 1;
+}
+
+.conversion-example-row .arrow {
+    color: #333;
+    font-weight: bold;
+}
+
+/* 新しいランキング表示 */
+.no-rankings {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin: 20px 0;
+}
+
+.no-rankings p:first-child {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.ranking-list-container {
+    margin: 20px 0;
+}
+
+.rankings {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ranking-entry {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin: 8px 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ranking-entry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.ranking-entry.rank-1 {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    color: #8b4513;
+}
+
+.ranking-entry.rank-2 {
+    background: linear-gradient(135deg, #c0c0c0, #a9a9a9);
+    color: #333;
+}
+
+.ranking-entry.rank-3 {
+    background: linear-gradient(135deg, #cd7f32, #b8860b);
+    color: #fff;
+}
+
+.rank-medal {
+    font-size: 1.5rem;
+    min-width: 40px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.entry-details {
+    flex: 1;
+}
+
+.player-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.player-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.ranking-entry.rank-1 .player-name,
+.ranking-entry.rank-2 .player-name,
+.ranking-entry.rank-3 .player-name {
+    color: inherit;
+}
+
+.player-score {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.game-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 5px;
+}
+
+.stat-item {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.entry-date {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* 次の体験セクション */
+.next-experience-section {
+    margin: 40px 0;
+}
+
+.next-feature-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feature-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.feature-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.feature-header h4 {
+    color: #2e7d32;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.feature-subtitle {
+    color: #666;
+    font-size: 1rem;
+}
+
+.feature-showcase {
+    margin: 25px 0;
+}
+
+.showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.showcase-item {
+    text-align: center;
+    padding: 20px;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 15px;
+}
+
+.showcase-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.showcase-item h5 {
+    color: #2e7d32;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.showcase-example {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.feature-demo-examples {
+    margin: 25px 0;
+}
+
+.feature-demo-examples h5 {
+    color: #2e7d32;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.demo-examples-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.demo-example {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.example-before, .example-after {
+    background: rgba(76, 175, 80, 0.2);
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: #2e7d32;
+    font-weight: 500;
+    flex: 1;
+}
+
+.example-prompt {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .conversion-example-row {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .conversion-example-row .input,
+    .conversion-example-row .output {
+        flex: none;
+        width: 100%;
+    }
+    
+    .showcase-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .demo-example {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .example-before, .example-after {
+        flex: none;
+        width: 100%;
+    }
+    
+    .ranking-entry {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .player-info {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .game-stats {
+        justify-content: center;
+        gap: 10px;
+    }
+}

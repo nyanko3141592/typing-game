@@ -707,7 +707,6 @@ function displayResult(score, correct, time) {
     }
     
     const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
-    const dailySushiCount = getDailySushiCount();
     
     const rankingDisplayHTML = `
         <div class="result-container">
@@ -715,7 +714,7 @@ function displayResult(score, correct, time) {
                 <div class="completion-badge">
                     <div class="badge-icon">🎉</div>
                     <h2 class="completion-title">ゲームクリア！</h2>
-                    <p class="completion-subtitle">azooKeyの高精度変換を体験できました</p>
+                    <p class="completion-subtitle">お疲れさまでした</p>
                 </div>
             </div>
             
@@ -723,7 +722,7 @@ function displayResult(score, correct, time) {
                 <div class="score-section">
                     <div class="main-score-card">
                         <div class="score-header">
-                            <h3>あなたのスコア</h3>
+                            <h3>🍣 あなたの結果</h3>
                         </div>
                         <div class="score-display">
                             <div class="score-value">${score.toFixed(2)}</div>
@@ -742,16 +741,15 @@ function displayResult(score, correct, time) {
                             </div>
                         </div>
                         <div class="score-formula">
-                            <p>スコア計算式: 100 - タイム + (取得数 × 10)</p>
+                            <p>スコア計算: 100 - タイム + (正解数 × 10)</p>
                         </div>
                     </div>
                 </div>
 
-
                 <div class="ranking-section">
                     <div class="ranking-header">
-                        <h3>🏆 ランキング</h3>
-                        <p class="ranking-subtitle">あなたのスコアをチェック！</p>
+                        <h3>🏆 本日のランキング</h3>
+                        <p class="ranking-subtitle">毎日0時にリセットされます</p>
                     </div>
                     
                     <div class="name-registration">
@@ -763,70 +761,78 @@ function displayResult(score, correct, time) {
                     </div>
                     
                     <div class="ranking-list" id="rankingList"></div>
-                    <div class="ranking-footer">
-                        <p class="next-step-hint">👆 ランキングを確認したら、次のステップへ！</p>
-                    </div>
                 </div>
 
-                <div class="conversion-tour-section">
+                <div class="next-experience-section">
                     <div class="tour-divider">
                         <div class="divider-line"></div>
-                        <div class="divider-text">🎯 次のチャレンジ</div>
+                        <div class="divider-text">🎯 次の体験</div>
                         <div class="divider-line"></div>
                     </div>
-                    <div class="tour-highlight">
-                        <div class="tour-intro">
-                            <h4>✨ 文脈変換を体験しました！<br>今度は「いい感じ変換」を試してみませんか？</h4>
-                            <p class="tour-description">azooKeyのもう一つの革新機能で、さらなる生産性向上を実現しましょう</p>
+                    
+                    <div class="next-feature-card">
+                        <div class="feature-header">
+                            <div class="feature-badge">NEXT STEP</div>
+                            <h4>🤖 いい感じ変換を体験しよう</h4>
+                            <p class="feature-subtitle">LLMと接続した賢い変換機能</p>
                         </div>
-                        <div class="next-feature-preview">
-                            <div class="feature-preview-card">
-                                <div class="preview-header">
-                                    <div class="feature-badge">NEW FEATURE</div>
-                                    <h5>🤖 いい感じ変換</h5>
-                                    <p class="preview-subtitle">プロンプト1つで文章を自在に変換</p>
+                        
+                        <div class="feature-showcase">
+                            <div class="showcase-grid">
+                                <div class="showcase-item">
+                                    <div class="showcase-icon">🎭</div>
+                                    <h5>文脈を理解したいい感じ変換</h5>
+                                    <p class="showcase-example">「えもじ」Ctrl+S → 文脈に合った絵文字・記号</p>
                                 </div>
-                                <div class="preview-example">
-                                    <div class="example-step">
-                                        <span class="step-number">1</span>
-                                        <div class="example-before">「今日は疲れた」を選択</div>
-                                    </div>
-                                    <div class="example-step">
-                                        <span class="step-number">2</span>
-                                        <div class="example-action">Ctrl+S → "English"</div>
-                                    </div>
-                                    <div class="example-step">
-                                        <span class="step-number">3</span>
-                                        <div class="example-after">「I'm tired today」</div>
-                                    </div>
+                                <div class="showcase-item">
+                                    <div class="showcase-icon">✨</div>
+                                    <h5>AI文章補完</h5>
+                                    <p class="showcase-example">Ctrl+S → 文章の続きを自動生成</p>
                                 </div>
-                                <div class="preview-benefits">
-                                    <span class="benefit-tag">🌍 English変換</span>
-                                    <span class="benefit-tag">😄 絵文字デコ</span>
-                                    <span class="benefit-tag">🙏 敬語変換</span>
-                                    <span class="benefit-tag">😊 カジュアル化</span>
-                                </div>
-                                <div class="cta-section">
-                                    <a href="good-feeling-conversion.html" class="next-experience-btn">
-                                        <span class="btn-icon">🚀</span>
-                                        <span class="btn-text">いい感じ変換を体験する</span>
-                                        <span class="btn-arrow">→</span>
-                                    </a>
-                                    <p class="cta-note">所要時間: 約3分</p>
+                                <div class="showcase-item">
+                                    <div class="showcase-icon">🔄</div>
+                                    <h5>選択範囲変換</h5>
+                                    <p class="showcase-example">選択してCtrl+S→「English」で翻訳</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="completion-message">
-                            <p>💡 文脈変換 + プロンプト変換 = azooKeyの真の実力を体感しよう！</p>
+                        
+                        <div class="feature-demo-examples">
+                            <h5>💡 体験できる変換例</h5>
+                            <div class="demo-examples-grid">
+                                <div class="demo-example">
+                                    <span class="example-before">中華料理はおいしい「えもじ」</span>
+                                    <span class="example-prompt">Ctrl+S</span>
+                                    <span class="example-after">→ 🥡🥟🍜</span>
+                                </div>
+                                <div class="demo-example">
+                                    <span class="example-before">母の日の花といえば</span>
+                                    <span class="example-prompt">Ctrl+S</span>
+                                    <span class="example-after">→ カーネーションが定番ですね。</span>
+                                </div>
+                                <div class="demo-example">
+                                    <span class="example-before">【私は直希です。よろしく】</span>
+                                    <span class="example-prompt">Ctrl+S→English</span>
+                                    <span class="example-after">→ I am Naoki. Nice to meet you.</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="cta-section">
+                            <a href="good-feeling-conversion.html" class="next-experience-btn">
+                                <span class="btn-icon">🚀</span>
+                                <span class="btn-text">いい感じ変換を体験する</span>
+                                <span class="btn-arrow">→</span>
+                            </a>
+                            <p class="cta-note">所要時間: 約3分</p>
                         </div>
                     </div>
                 </div>
-
 
                 <div class="actions-section">
                     <button id="restartBtn" class="action-btn primary">もう一度プレイ</button>
                     <a href="https://zenn.dev/azookey/articles/ea15bacf81521e" target="_blank" class="action-btn secondary">
-                        azooKey on macOSについて詳しく
+                        azooKey on macOSをダウンロード
                     </a>
                 </div>
             </div>
@@ -904,27 +910,33 @@ function displayRankings() {
     if (!rankingList) return;
     
     if (rankings.length === 0) {
-        rankingList.innerHTML = '<p class="no-rankings">まだランキングがありません</p>';
+        rankingList.innerHTML = '<div class="no-rankings"><p>🎌 まだランキングがありません</p><p>あなたが今日の1番乗りです！</p></div>';
         return;
     }
     
-    let html = '<h3>ランキング TOP10</h3><ol class="rankings">';
+    let html = '<div class="ranking-list-container"><ol class="rankings">';
     rankings.forEach((entry, index) => {
+        const rankClass = index < 3 ? `rank-${index + 1}` : '';
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}位`;
+        
         html += `
-            <li class="ranking-entry">
-                <span class="rank">${index + 1}位</span>
+            <li class="ranking-entry ${rankClass}">
+                <div class="rank-medal">${medal}</div>
                 <div class="entry-details">
-                    <div class="name-time">
-                        <span class="name">${entry.name}</span>
-                        <span class="score">スコア: ${entry.score}点</span>
+                    <div class="player-info">
+                        <span class="player-name">${entry.name}</span>
+                        <span class="player-score">${entry.score}点</span>
                     </div>
-                    <div class="stats">🍣${entry.correct}貫 | ⏱${entry.time}秒</div>
-                    <div class="date">${entry.date}</div>
+                    <div class="game-stats">
+                        <span class="stat-item">🍣 ${entry.correct}問正解</span>
+                        <span class="stat-item">⏱️ ${entry.time}秒</span>
+                    </div>
+                    <div class="entry-date">${entry.date}</div>
                 </div>
             </li>
         `;
     });
-    html += '</ol>';
+    html += '</ol></div>';
     
     rankingList.innerHTML = html;
 }
