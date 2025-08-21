@@ -1259,10 +1259,11 @@ h1 {
     border-radius: 12px;
     padding: 8px;
     position: relative;
-    height: 150px;
+    height: 300px;
     box-shadow: 
         inset 0 3px 10px rgba(0,0,0,0.3),
         inset 0 -2px 6px rgba(255,255,255,0.1);
+    margin-top: 20px;
 }
 
 .belt-track {
@@ -1332,18 +1333,19 @@ h1 {
 }
 
 .input-result {
-    padding: 15px 18px;
+    padding: 8px 12px;
     background: 
-        linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 50%, #A5D6A7 100%);
-    border-radius: 12px;
-    border: 3px solid #2E7D32;
+        linear-gradient(135deg, rgba(232, 245, 232, 0.8) 0%, rgba(200, 230, 201, 0.8) 100%);
+    border-radius: 10px;
+    border: 2px solid rgba(46, 125, 50, 0.6);
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     box-shadow: 
-        inset 0 2px 4px rgba(255,255,255,0.6),
-        inset 0 -1px 2px rgba(46,125,50,0.2),
-        0 2px 8px rgba(46,125,50,0.2);
+        inset 0 1px 2px rgba(255,255,255,0.5),
+        0 1px 4px rgba(46,125,50,0.2);
     position: relative;
+    margin-top: 8px;
+    backdrop-filter: blur(1px);
 }
 
 .input-result::before {
@@ -1364,14 +1366,15 @@ h1 {
 .input-result .result-label {
     color: #1B5E20;
     font-weight: bold;
-    margin-right: 10px;
+    margin-right: 6px;
     text-shadow: 0 1px 1px rgba(255,255,255,0.6);
+    font-size: 0.9rem;
 }
 
 .input-result #userConverted {
     color: #2E7D32;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-shadow: 0 1px 1px rgba(255,255,255,0.6);
 }
 
@@ -1463,37 +1466,37 @@ h1 {
 }
 
 .sushi-plate .plate {
-    width: 70px;
-    height: 25px;
+    width: 110px;
+    height: 40px;
     background: 
         radial-gradient(ellipse 70% 40% at 50% 20%, #ffffff 0%, #f5f5f5 30%, #e0e0e0 70%, #d0d0d0 100%),
         linear-gradient(to bottom, #f8f8f8 0%, #e8e8e8 50%, #d8d8d8 100%);
     border-radius: 50%;
     box-shadow: 
-        0 3px 8px rgba(0,0,0,0.25),
-        inset 0 1px 2px rgba(255,255,255,0.8),
-        inset 0 -1px 1px rgba(0,0,0,0.1);
+        0 4px 12px rgba(0,0,0,0.3),
+        inset 0 2px 3px rgba(255,255,255,0.8),
+        inset 0 -2px 2px rgba(0,0,0,0.15);
     position: relative;
-    border: 1px solid #cccccc;
+    border: 2px solid #cccccc;
 }
 
 .sushi-plate .plate::before {
     content: '';
     position: absolute;
-    top: 2px;
+    top: 3px;
     left: 50%;
     transform: translateX(-50%);
-    width: 55px;
-    height: 15px;
+    width: 85px;
+    height: 22px;
     background: 
         radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, transparent 70%);
     border-radius: 50%;
 }
 
 .sushi-plate .sushi {
-    font-size: 2.8rem;
-    margin-bottom: -12px;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+    font-size: 4.5rem;
+    margin-bottom: -18px;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
     z-index: 2;
     position: relative;
 }
@@ -1811,20 +1814,22 @@ h1 {
 
 .question-display {
     text-align: center;
-    padding: 15px 20px;
-    background: rgba(255, 253, 231, 0.85);
+    padding: 12px 18px;
+    background: rgba(255, 253, 231, 0.9);
     border-radius: 15px;
-    border: 2px solid rgba(255, 143, 0, 0.6);
+    border: 2px solid rgba(255, 143, 0, 0.7);
     box-shadow: 
         0 4px 20px rgba(0,0,0,0.2),
         inset 0 2px 4px rgba(255,255,255,0.5);
     position: absolute;
-    top: 50%;
+    top: auto;
+    bottom: 8px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0);
     z-index: 10;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(1px);
     min-width: 300px;
+    max-width: 500px;
 }
 
 .question-display::before {

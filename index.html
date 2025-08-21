@@ -350,6 +350,11 @@
                             <span id="expectedAnswer">雑誌に載ります</span>
                             <rt id="targetReading">ざっしにのります</rt>
                         </ruby>
+                        
+                        <!-- 入力結果を問題文の下に表示 -->
+                        <div class="input-result">
+                            <span id="userConverted">-</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -367,11 +372,6 @@
                     <textarea id="userInput" rows="2" placeholder="ここに入力してEnterで確定" autocomplete="off" spellcheck="false"></textarea>
                 </div>
                 
-                <!-- 入力結果 -->
-                <div class="input-result">
-                    <span class="result-label">入力結果:</span>
-                    <span id="userConverted">-</span>
-                </div>
             </div>
 
             <div class="feedback" id="feedback"></div>

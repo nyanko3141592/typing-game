@@ -271,7 +271,7 @@ function loadQuestion() {
         targetReadingEl.textContent = question.answer;
     }
     
-    userConvertedEl.innerHTML = '<span class="result-label">入力結果:</span> -';
+    userConvertedEl.innerHTML = '-';
     
     // azooKeyの優位性を示すヒントを表示
     showAzooKeyHint(currentQuestionIndex);
@@ -613,7 +613,7 @@ function updateComparisonDisplay(userConverted, expected) {
         expectedHTML += `<span class="no-match">${expected.substring(matchLength)}</span>`;
     }
     
-    let convertedHTML = '<span class="result-label">入力結果:</span> ';
+    let convertedHTML = '';
     if (matchLength > 0) {
         convertedHTML += `<span class="match">${userConverted.substring(0, matchLength)}</span>`;
     }
