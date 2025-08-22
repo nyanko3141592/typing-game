@@ -717,31 +717,50 @@ function displayResult(score, correct, time) {
     
     const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
     
-    // 寿司打風のスコア計算
-    const courseCost = 10000; // 高級コース
-    const sushiPrice = 100; // 1皿100円
-    const totalEarned = correct * sushiPrice;
-    const profit = totalEarned - courseCost;
+    // スコア計算
     const kpm = Math.round((totalKeystrokeCount / time) * 60); // Keys per minute
     const kps = (totalKeystrokeCount / time).toFixed(1); // Keys per second
+    
+    // ランキング順位を取得
+    const rankings = getRankings();
+    let userRank = null;
+    if (lastEntry.id) {
+        userRank = rankings.findIndex(entry => entry.id === lastEntry.id) + 1;
+    }
     
     const rankingDisplayHTML = `
         <div class="sushida-result-container">
             <div class="sushida-result-header">
-                <div class="course-info">
-                    <span class="course-name">高級 10,000円コース</span>
-                    <span class="course-difficulty">【速度必須】</span>
-                </div>
-                
                 <div class="main-score">
-                    <div class="score-row">
-                        <span class="score-label">成績</span>
-                        <span class="score-amount">${totalEarned.toLocaleString()}円分のお皿を
-                            ゲット！</span>
+                    <div class="result-title">🎉 ゲームクリア！</div>
+                    ${userRank && userRank <= 10 ? `
+                    <div class="ranking-celebration">
+                        <div class="rank-badge ${userRank <= 3 ? 'rank-' + userRank : ''}">
+                            ${userRank === 1 ? '🥇' : userRank === 2 ? '🥈' : userRank === 3 ? '🥉' : '🏅'}
+                        </div>
+                        <div class="rank-message">
+                            ${userRank === 1 ? '🎆 第1位おめでとう！最高記録です！' : 
+                              userRank === 2 ? '✨ 第2位おめでとう！素晴らしい記録！' :
+                              userRank === 3 ? '🎉 第3位おめでとう！表彰台です！' :
+                              `🎆 第${userRank}位にランクイン！`}
+                        </div>
                     </div>
-                    <div class="profit-row ${profit >= 0 ? 'profit-positive' : 'profit-negative'}">
-                        <span class="profit-amount">${profit >= 0 ? '+' : ''}${profit.toLocaleString()}円</span>
-                        <span class="profit-label">${profit >= 0 ? 'お得でした！' : '損してます...'}</span>
+                    ` : ''}
+                    <div class="score-display">
+                        <div class="score-number">${score.toFixed(2)}</div>
+                        <div class="score-text">点</div>
+                    </div>
+                    <div class="result-summary">
+                        <div class="summary-item">
+                            <span class="summary-icon">🍣</span>
+                            <span class="summary-value">${correct}問</span>
+                            <span class="summary-label">正解</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">⏱️</span>
+                            <span class="summary-value">${time.toFixed(2)}秒</span>
+                            <span class="summary-label">経過</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -768,21 +787,13 @@ function displayResult(score, correct, time) {
                     
                     <div class="sushida-details">
                         <div class="detail-row">
-                            <span class="detail-label">🍣 ランキングを表示</span>
-                            <button class="detail-toggle" id="toggleRankingBtn">▼</button>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">📱 コース選択</span>
-                            <button class="detail-button" id="courseSelectBtn">もう一度</button>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">🐦 Twitterでつぶやく</span>
-                            <button class="detail-button" id="tweetBtn">ツイートする</button>
+                            <span class="detail-label">🔄 もう一度プレイ</span>
+                            <button class="detail-button" id="restartGameBtn">リスタート</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="ranking-section" id="rankingSection" style="display: none;">
+                <div class="ranking-section" id="rankingSection">
                     <div class="ranking-header">
                         <h3>🏆 本日のランキング</h3>
                         <p class="ranking-subtitle">毎日0時にリセットされます</p>
@@ -883,10 +894,7 @@ function displayResult(score, correct, time) {
     const updateBtn = document.getElementById('updateNameBtn');
     const nameInput = document.getElementById('playerName');
     const restartBtn = document.getElementById('restartBtn');
-    const toggleRankingBtn = document.getElementById('toggleRankingBtn');
-    const courseSelectBtn = document.getElementById('courseSelectBtn');
-    const tweetBtn = document.getElementById('tweetBtn');
-    const rankingSection = document.getElementById('rankingSection');
+    const restartGameBtn = document.getElementById('restartGameBtn');
     
     if (updateBtn) {
         updateBtn.addEventListener('click', () => updatePlayerName());
@@ -899,30 +907,12 @@ function displayResult(score, correct, time) {
     if (restartBtn) {
         restartBtn.addEventListener('click', resetGame);
     }
-    if (toggleRankingBtn) {
-        toggleRankingBtn.addEventListener('click', () => {
-            if (rankingSection.style.display === 'none') {
-                rankingSection.style.display = 'block';
-                toggleRankingBtn.textContent = '▲';
-                displayRankings();
-            } else {
-                rankingSection.style.display = 'none';
-                toggleRankingBtn.textContent = '▼';
-            }
-        });
-    }
-    if (courseSelectBtn) {
-        courseSelectBtn.addEventListener('click', resetGame);
-    }
-    if (tweetBtn) {
-        tweetBtn.addEventListener('click', () => {
-            const tweetText = `寿司打風タイピングゲームで${totalEarned.toLocaleString()}円分のお皿をゲット！\n${profit >= 0 ? '+' : ''}${profit.toLocaleString()}円${profit >= 0 ? 'お得でした！' : '損しました...'}\nタイピング速度: ${kps}回/秒\n#azooKey #タイピングゲーム`;
-            const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(window.location.href)}`;
-            window.open(tweetUrl, '_blank');
-        });
+    if (restartGameBtn) {
+        restartGameBtn.addEventListener('click', resetGame);
     }
     
-    // ランキングは最初は非表示
+    // ランキングを表示
+    displayRankings();
 }
 
 function updatePlayerName() {
