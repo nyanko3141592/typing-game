@@ -12,6 +12,9 @@ let timerInterval = null;
 let isProcessing = false;
 let questionTimer = null;
 let correctCount = 0;
+let totalKeystrokeCount = 0; // 全体のキーストローク数
+let correctKeystrokeCount = 0; // 正しいキーストローク数
+let missKeystrokeCount = 0; // ミスタイプ数
 
 // DOM要素は関数内で取得（初期化後に取得）
 let userConvertedEl, userInputEl, submitBtnEl, expectedAnswerEl, feedbackEl;
@@ -201,6 +204,12 @@ function resetGame() {
     if (questionTimer) {
         clearInterval(questionTimer);
     }
+    
+    // カウンターをリセット
+    totalKeystrokeCount = 0;
+    correctKeystrokeCount = 0;
+    missKeystrokeCount = 0;
+    correctCount = 0;
     // 収集したスコアをクリア
     document.getElementById('sushiCollection').innerHTML = '';
     
@@ -531,6 +540,8 @@ function checkAnswer() {
     if (isCorrect) {
         console.log('正解処理開始');
         correctCount++;
+        // 正解時は入力文字数を正しいキーストロークとしてカウント
+        correctKeystrokeCount += fullText.length;
         clearInterval(questionTimer);
         showFeedback('🍣 ごちそうさま！', 'correct');
         collectSushi();
@@ -541,6 +552,8 @@ function checkAnswer() {
             isProcessing = false;
         }, 1000);
     } else {
+        // 不正解時はミスカウントを増やす
+        missKeystrokeCount += Math.abs(fullText.length - question.fullDisplay.length) || 1;
         userInputEl.focus();
         isProcessing = false;
     }
@@ -704,33 +717,83 @@ function displayResult(score, correct, time) {
     
     const lastEntry = JSON.parse(localStorage.getItem('typingGameLastEntry') || '{}');
     
+    // スコア計算
+    const kpm = Math.round((totalKeystrokeCount / time) * 60); // Keys per minute
+    const kps = (totalKeystrokeCount / time).toFixed(1); // Keys per second
+    
+    // ランキング順位を取得
+    const rankings = getRankings();
+    let userRank = null;
+    if (lastEntry.id) {
+        userRank = rankings.findIndex(entry => entry.id === lastEntry.id) + 1;
+    }
+    
     const rankingDisplayHTML = `
-        <div class="result-container">
-            <div class="result-header">
-                <div class="completion-badge">
-                    <div class="badge-icon">🎉</div>
-                    <h2 class="completion-title">ゲームクリア！</h2>
-                    <p class="completion-subtitle">お疲れさまでした</p>
-                    <div class="score-display-compact">
-                        <div class="score-value">${score.toFixed(2)}</div>
-                        <div class="score-unit">点</div>
-                    </div>
-                    <div class="score-breakdown-compact">
-                        <div class="breakdown-item-compact">
-                            <span class="breakdown-icon">🍣</span>
-                            <span class="breakdown-value">${correct}問正解</span>
+        <div class="sushida-result-container">
+            <div class="sushida-result-header">
+                <div class="main-score">
+                    <div class="result-title">🎉 ゲームクリア！</div>
+                    ${userRank && userRank <= 10 ? `
+                    <div class="ranking-celebration">
+                        <div class="rank-badge ${userRank <= 3 ? 'rank-' + userRank : ''}">
+                            ${userRank === 1 ? '🥇' : userRank === 2 ? '🥈' : userRank === 3 ? '🥉' : '🏅'}
                         </div>
-                        <div class="breakdown-item-compact">
-                            <span class="breakdown-icon">⏱️</span>
-                            <span class="breakdown-value">${time.toFixed(2)}秒</span>
+                        <div class="rank-message">
+                            ${userRank === 1 ? '🎆 第1位おめでとう！最高記録です！' : 
+                              userRank === 2 ? '✨ 第2位おめでとう！素晴らしい記録！' :
+                              userRank === 3 ? '🎉 第3位おめでとう！表彰台です！' :
+                              `🎆 第${userRank}位にランクイン！`}
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div class="score-display">
+                        <div class="score-number">${score.toFixed(2)}</div>
+                        <div class="score-text">点</div>
+                    </div>
+                    <div class="result-summary">
+                        <div class="summary-item">
+                            <span class="summary-icon">🍣</span>
+                            <span class="summary-value">${correct}問</span>
+                            <span class="summary-label">正解</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-icon">⏱️</span>
+                            <span class="summary-value">${time.toFixed(2)}秒</span>
+                            <span class="summary-label">経過</span>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="result-content">
+            <div class="sushida-result-content">
+                <div class="sushida-stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">正しく打ったキーの数</div>
+                            <div class="stat-value">${correctKeystrokeCount}</div>
+                            <div class="stat-unit">回</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">平均キータイプ数</div>
+                            <div class="stat-value">${kps}</div>
+                            <div class="stat-unit">回/秒</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">ミスタイプ数</div>
+                            <div class="stat-value">${missKeystrokeCount}</div>
+                            <div class="stat-unit">回</div>
+                        </div>
+                    </div>
+                    
+                    <div class="sushida-details">
+                        <div class="detail-row">
+                            <span class="detail-label">🔄 もう一度プレイ</span>
+                            <button class="detail-button" id="restartGameBtn">リスタート</button>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="ranking-section">
+                <div class="ranking-section" id="rankingSection">
                     <div class="ranking-header">
                         <h3>🏆 本日のランキング</h3>
                         <p class="ranking-subtitle">毎日0時にリセットされます</p>
@@ -831,13 +894,24 @@ function displayResult(score, correct, time) {
     const updateBtn = document.getElementById('updateNameBtn');
     const nameInput = document.getElementById('playerName');
     const restartBtn = document.getElementById('restartBtn');
+    const restartGameBtn = document.getElementById('restartGameBtn');
     
-    updateBtn.addEventListener('click', () => updatePlayerName());
-    nameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') updatePlayerName();
-    });
-    restartBtn.addEventListener('click', resetGame);
+    if (updateBtn) {
+        updateBtn.addEventListener('click', () => updatePlayerName());
+    }
+    if (nameInput) {
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') updatePlayerName();
+        });
+    }
+    if (restartBtn) {
+        restartBtn.addEventListener('click', resetGame);
+    }
+    if (restartGameBtn) {
+        restartGameBtn.addEventListener('click', resetGame);
+    }
     
+    // ランキングを表示
     displayRankings();
 }
 
@@ -1066,6 +1140,11 @@ function setupEventListeners() {
     // 基本的なゲームイベント
     if (userInputEl) {
         userInputEl.addEventListener('keydown', (e) => {
+            // キーストロークをカウント（Enterキー以外）
+            if (gameStarted && e.key !== 'Enter' && e.key.length === 1) {
+                totalKeystrokeCount++;
+            }
+            
             if (e.key === 'Enter') {
                 e.preventDefault();
                 checkAnswer();
